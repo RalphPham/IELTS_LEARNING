@@ -1,0 +1,640 @@
+CREATE TABLE [dbo].[admin_action_logs](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[admin_username] [nvarchar](100) NOT NULL,
+	[action] [nvarchar](100) NOT NULL,
+	[description] [nvarchar](500) NULL,
+	[target_id] [bigint] NULL,
+	[target_type] [nvarchar](50) NULL,
+	[created_at] [datetime2](7) NOT NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[admins](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[username] [varchar](50) NOT NULL,
+	[password] [varchar](255) NOT NULL,
+	[full_name] [nvarchar](100) NULL,
+	[is_active] [bit] NULL,
+	[created_at] [datetime2](7) NULL,
+	[admin_role] [nvarchar](20) NOT NULL,
+	[permissions] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[answers](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[question_id] [bigint] NOT NULL,
+	[content] [nvarchar](max) NOT NULL,
+	[is_correct] [bit] NOT NULL,
+	[created_at] [datetime2](7) NULL,
+	[instructor_id] [bigint] NULL,
+	[student_id] [bigint] NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[assignment_submissions](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[assignment_id] [bigint] NOT NULL,
+	[student_id] [bigint] NOT NULL,
+	[instructor_id] [bigint] NULL,
+	[content] [nvarchar](max) NULL,
+	[attached_file_url] [varchar](max) NULL,
+	[grade] [float] NULL,
+	[feedback] [nvarchar](max) NULL,
+	[status] [varchar](50) NULL,
+	[submitted_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[assignments](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[title] [nvarchar](255) NOT NULL,
+	[description] [nvarchar](max) NULL,
+	[section_id] [bigint] NULL,
+	[course_id] [bigint] NULL,
+	[duration] [int] NULL,
+	[created_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[blog_posts](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[author_name] [nvarchar](200) NULL,
+	[category] [nvarchar](100) NULL,
+	[content] [nvarchar](max) NOT NULL,
+	[created_at] [datetime2](6) NULL,
+	[excerpt] [nvarchar](500) NULL,
+	[published_at] [datetime2](6) NULL,
+	[read_time] [nvarchar](50) NULL,
+	[status] [varchar](20) NULL,
+	[thumbnail] [nvarchar](500) NULL,
+	[title] [nvarchar](500) NOT NULL,
+	[updated_at] [datetime2](6) NULL,
+	[views] [int] NOT NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[bundle_courses](
+	[bundle_id] [bigint] NOT NULL,
+	[course_id] [bigint] NOT NULL,
+PRIMARY KEY CLUSTERED ([bundle_id] ASC, [course_id] ASC)
+);
+
+CREATE TABLE [dbo].[bundles](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[title] [nvarchar](255) NOT NULL,
+	[description] [nvarchar](max) NULL,
+	[thumbnail] [varchar](255) NULL,
+	[price] [numeric](38, 2) NULL,
+	[status] [varchar](50) NULL,
+	[created_at] [datetime2](7) NULL,
+	[updated_at] [datetime2](7) NULL,
+	[instructor_id] [bigint] NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[cart_items](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[cart_id] [bigint] NOT NULL,
+	[course_id] [bigint] NOT NULL,
+	[price] [decimal](38, 2) NULL,
+	[created_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[carts](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[student_id] [bigint] NOT NULL,
+	[updated_at] [datetime2](7) NULL,
+	[user_id] [bigint] NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[categories](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[name] [nvarchar](100) NOT NULL,
+	[slug] [varchar](150) NOT NULL,
+	[parent_id] [bigint] NULL,
+	[description] [nvarchar](500) NULL,
+	[icon_url] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[certificates](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[certificate_code] [varchar](50) NOT NULL,
+	[student_id] [bigint] NOT NULL,
+	[course_id] [bigint] NOT NULL,
+	[issued_at] [datetime2](7) NOT NULL,
+	[certificate_url] [nvarchar](255) NULL,
+	[completed_at] [datetime] NULL,
+	[is_active] [bit] NOT NULL,
+	[verify_url] [nvarchar](500) NULL,
+	[enrollment_id] [bigint] NULL,
+	[pdf_url] [nvarchar](500) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[chat_messages](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[sender_id] [bigint] NOT NULL,
+	[receiver_id] [bigint] NOT NULL,
+	[content] [nvarchar](max) NOT NULL,
+	[timestamp] [datetime2](7) NULL,
+	[is_read] [bit] NOT NULL,
+	[is_deleted] [bit] NULL,
+	[attachment_type] [varchar](50) NULL,
+	[attachment_url] [varchar](1000) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[coupons](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[code] [varchar](50) NOT NULL,
+	[discount_type] [varchar](20) NULL,
+	[discount_value] [numeric](38, 2) NULL,
+	[max_usage] [int] NULL,
+	[used_count] [int] NULL,
+	[is_active] [bit] NULL,
+	[start_date] [datetime2](7) NULL,
+	[end_date] [datetime2](7) NULL,
+	[min_order_value] [decimal](38, 2) NULL,
+	[usage_limit] [int] NULL,
+	[value] [decimal](38, 2) NULL,
+	[usage_count] [int] NULL,
+	[instructor_id] [bigint] NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[course_approval_history](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[course_id] [bigint] NULL,
+	[admin_id] [bigint] NULL,
+	[status_before] [varchar](50) NULL,
+	[status_after] [varchar](50) NULL,
+	[reason] [nvarchar](max) NULL,
+	[created_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[course_change_requests](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[course_id] [bigint] NOT NULL,
+	[instructor_id] [bigint] NOT NULL,
+	[request_type] [nvarchar](50) NOT NULL,
+	[status] [varchar](20) NOT NULL,
+	[payload_before] [nvarchar](max) NOT NULL,
+	[payload_after] [nvarchar](max) NOT NULL,
+	[request_note] [nvarchar](500) NULL,
+	[admin_note] [nvarchar](500) NULL,
+	[reviewed_by] [bigint] NULL,
+	[reviewed_at] [datetime2](7) NULL,
+	[created_at] [datetime2](7) NULL,
+	[updated_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[courses](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[instructor_id] [bigint] NOT NULL,
+	[category_id] [bigint] NULL,
+	[title] [nvarchar](255) NOT NULL,
+	[slug] [varchar](255) NOT NULL,
+	[price] [decimal](38, 2) NULL,
+	[sale_price] [numeric](18, 2) NULL,
+	[commission_rate] [float] NULL,
+	[thumbnail] [nvarchar](500) NULL,
+	[description] [nvarchar](max) NULL,
+	[short_description] [nvarchar](500) NULL,
+	[learning_outcomes] [nvarchar](max) NULL,
+	[level] [varchar](20) NULL,
+	[status] [varchar](30) NULL,
+	[student_count] [int] NULL,
+	[total_lessons] [int] NULL,
+	[total_duration] [int] NULL,
+	[average_rating] [float] NULL,
+	[created_at] [datetime2](7) NULL,
+	[updated_at] [datetime2](7) NULL,
+	[language] [nvarchar](50) NULL,
+	[rental_enabled] [bit] NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[enrollments](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[student_id] [bigint] NOT NULL,
+	[course_id] [bigint] NOT NULL,
+	[enrolled_at] [datetime2](7) NULL,
+	[progress] [decimal](5, 2) NULL,
+	[status] [varchar](20) NULL,
+	[is_course_completed] [bit] NOT NULL,
+	[course_completed_at] [datetime] NULL,
+	[completion_email_sent] [bit] NOT NULL,
+	[certificate_issued] [bit] NOT NULL,
+	[rental_expires_at] [datetime2](7) NULL,
+	[refund_locked_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[instructors](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[user_id] [bigint] NOT NULL,
+	[full_name] [nvarchar](100) NULL,
+	[phone] [varchar](20) NULL,
+	[bio] [nvarchar](max) NULL,
+	[avatar_url] [nvarchar](500) NULL,
+	[bank_account] [nvarchar](50) NULL,
+	[bank_name] [nvarchar](100) NULL,
+	[wallet_balance] [decimal](18, 2) NULL,
+	[is_active] [bit] NULL,
+	[created_at] [datetime2](7) NULL,
+	[bank_info] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[learning_progress](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[enrollment_id] [bigint] NOT NULL,
+	[lesson_id] [bigint] NOT NULL,
+	[is_completed] [bit] NULL,
+	[last_watched_at] [datetime2](7) NULL,
+	[completed_at] [datetime] NULL,
+	[student_id] [bigint] NULL,
+	[watch_time] [int] NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[lesson_answers](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[question_id] [bigint] NOT NULL,
+	[instructor_id] [bigint] NULL,
+	[content] [nvarchar](max) NOT NULL,
+	[created_at] [datetime2](7) NULL,
+	[student_id] [bigint] NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[lesson_questions](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[lesson_id] [bigint] NOT NULL,
+	[course_id] [bigint] NOT NULL,
+	[student_id] [bigint] NOT NULL,
+	[content] [nvarchar](max) NOT NULL,
+	[answer_count] [int] NULL,
+	[created_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[lesson_resources](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[lesson_id] [bigint] NOT NULL,
+	[instructor_id] [bigint] NOT NULL,
+	[file_name] [nvarchar](500) NOT NULL,
+	[file_url] [nvarchar](1000) NOT NULL,
+	[file_type] [nvarchar](50) NULL,
+	[file_size] [bigint] NULL,
+	[uploaded_at] [datetime2](7) NOT NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[lessons](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[section_id] [bigint] NOT NULL,
+	[title] [nvarchar](255) NOT NULL,
+	[type] [varchar](20) NULL,
+	[video_url] [nvarchar](500) NULL,
+	[duration] [int] NULL,
+	[is_preview] [bit] NULL,
+	[order_index] [int] NULL,
+	[content_text] [nvarchar](max) NULL,
+	[document_url] [nvarchar](500) NULL,
+	[quiz_id] [bigint] NULL,
+	[description] [nvarchar](500) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[messages](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[sender_id] [bigint] NOT NULL,
+	[receiver_id] [bigint] NOT NULL,
+	[content] [nvarchar](max) NULL,
+	[sender_role] [varchar](20) NULL,
+	[created_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[notes](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[student_id] [bigint] NOT NULL,
+	[lesson_id] [bigint] NOT NULL,
+	[content] [nvarchar](max) NOT NULL,
+	[created_at] [datetime2](6) NOT NULL,
+	[timestamp_seconds] [int] NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[notifications](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[title] [nvarchar](255) NOT NULL,
+	[message] [nvarchar](max) NOT NULL,
+	[target_url] [nvarchar](500) NULL,
+	[type] [nvarchar](100) NOT NULL,
+	[category] [nvarchar](50) NOT NULL,
+	[is_read] [bit] NOT NULL,
+	[is_important] [bit] NOT NULL,
+	[created_at] [datetime2](7) NOT NULL,
+	[user_id] [bigint] NOT NULL,
+	[course_name] [nvarchar](255) NULL,
+	[student_name] [nvarchar](255) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[order_details](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[order_id] [bigint] NOT NULL,
+	[course_id] [bigint] NOT NULL,
+	[price] [decimal](38, 2) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[order_items](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[price] [numeric](38, 2) NOT NULL,
+	[course_id] [bigint] NULL,
+	[order_id] [bigint] NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[orders](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[student_id] [bigint] NOT NULL,
+	[original_amount] [decimal](38, 2) NULL,
+	[final_amount] [decimal](38, 2) NULL,
+	[status] [varchar](20) NULL,
+	[payment_method] [varchar](50) NULL,
+	[created_at] [datetime2](7) NULL,
+	[updated_at] [datetime2](7) NULL,
+	[note] [nvarchar](max) NULL,
+	[coupon_code] [varchar](50) NULL,
+	[transaction_ref] [varchar](255) NULL,
+	[discount_amount] [numeric](38, 2) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[payments](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[order_id] [bigint] NOT NULL,
+	[amount] [numeric](38, 2) NULL,
+	[transaction_ref] [varchar](100) NULL,
+	[status] [varchar](20) NULL,
+	[created_at] [datetime2](7) NULL,
+	[bank_code] [varchar](50) NULL,
+	[transaction_date] [datetime2](7) NULL,
+	[response_message] [nvarchar](255) NULL,
+	[payment_method] [varchar](50) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[questions](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[quiz_id] [bigint] NOT NULL,
+	[content] [nvarchar](max) NOT NULL,
+	[score] [float] NULL,
+	[created_at] [datetime2](7) NULL,
+	[course_id] [bigint] NULL,
+	[student_id] [bigint] NULL,
+	[lesson_id] [bigint] NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[quiz_submissions](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[enrollment_id] [bigint] NOT NULL,
+	[quiz_id] [bigint] NOT NULL,
+	[score] [numeric](38, 2) NULL,
+	[is_passed] [bit] NULL,
+	[submitted_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[quizzes](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[section_id] [bigint] NOT NULL,
+	[title] [nvarchar](255) NOT NULL,
+	[passing_score] [int] NULL,
+	[order_index] [int] NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[ratings](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[course_id] [bigint] NOT NULL,
+	[student_id] [bigint] NOT NULL,
+	[stars] [int] NOT NULL,
+	[comment] [nvarchar](500) NULL,
+	[created_at] [datetime2](7) NULL,
+	[updated_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[refresh_tokens](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[token] [varchar](512) NOT NULL,
+	[user_id] [bigint] NOT NULL,
+	[user_type] [varchar](20) NOT NULL,
+	[expires_at] [datetime2](7) NOT NULL,
+	[created_at] [datetime2](7) NOT NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[refund_requests](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[order_id] [bigint] NOT NULL,
+	[student_id] [bigint] NOT NULL,
+	[amount] [decimal](18, 2) NOT NULL,
+	[reason] [nvarchar](1000) NULL,
+	[status] [nvarchar](20) NOT NULL,
+	[admin_note] [nvarchar](1000) NULL,
+	[created_at] [datetime2](7) NOT NULL,
+	[resolved_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[roles](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[name] [varchar](20) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[sale_campaign_items](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[campaign_id] [bigint] NOT NULL,
+	[course_id] [bigint] NOT NULL,
+	[promotional_price] [numeric](38, 2) NULL,
+	[total_slots] [int] NOT NULL,
+	[sold_slots] [int] NOT NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[sale_campaigns](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[name] [nvarchar](255) NOT NULL,
+	[start_date] [datetime2](7) NOT NULL,
+	[end_date] [datetime2](7) NOT NULL,
+	[is_active] [bit] NOT NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[sections](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[course_id] [bigint] NOT NULL,
+	[title] [nvarchar](255) NOT NULL,
+	[order_index] [int] NULL,
+	[description] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[student_status_histories](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[action_by] [varchar](255) NULL,
+	[created_at] [datetime2](6) NULL,
+	[new_status] [varchar](50) NULL,
+	[old_status] [varchar](50) NULL,
+	[reason] [nvarchar](500) NULL,
+	[student_id] [bigint] NOT NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[students](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[email] [varchar](100) NOT NULL,
+	[password] [varchar](255) NOT NULL,
+	[full_name] [nvarchar](100) NOT NULL,
+	[phone] [varchar](20) NULL,
+	[avatar] [varchar](500) NULL,
+	[role] [varchar](20) NULL,
+	[is_active] [bit] NULL,
+	[is_verified] [bit] NULL,
+	[created_at] [datetime2](7) NULL,
+	[otp_code] [varchar](10) NULL,
+	[otp_expiry] [datetime2](7) NULL,
+	[balance] [decimal](18, 2) NULL,
+	[admin_note] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[support_tickets](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[admin_reply] [nvarchar](max) NULL,
+	[content] [nvarchar](max) NOT NULL,
+	[created_at] [datetime2](6) NULL,
+	[status] [varchar](255) NOT NULL,
+	[title] [nvarchar](255) NOT NULL,
+	[updated_at] [datetime2](6) NULL,
+	[student_id] [bigint] NOT NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[user_roles](
+	[user_id] [bigint] NOT NULL,
+	[role_id] [bigint] NOT NULL,
+PRIMARY KEY CLUSTERED ([user_id] ASC, [role_id] ASC)
+);
+
+CREATE TABLE [dbo].[users](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[avatar_url] [varchar](500) NULL,
+	[balance] [numeric](19, 2) NULL,
+	[created_at] [datetime2](6) NOT NULL,
+	[email] [varchar](100) NOT NULL,
+	[full_name] [varchar](100) NOT NULL,
+	[is_active] [bit] NULL,
+	[is_verified] [bit] NULL,
+	[password] [varchar](255) NOT NULL,
+	[phone] [varchar](20) NULL,
+	[updated_at] [datetime2](6) NULL,
+	[username] [varchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[wishlists](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[student_id] [bigint] NOT NULL,
+	[course_id] [bigint] NOT NULL,
+	[created_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+CREATE TABLE [dbo].[withdraw_requests](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[instructor_id] [bigint] NOT NULL,
+	[amount] [decimal](38, 2) NULL,
+	[bank_info] [nvarchar](max) NULL,
+	[status] [varchar](20) NULL,
+	[created_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED ([id] ASC)
+);
+
+-- FOREIGN KEY CONSTRAINTS --
+ALTER TABLE [dbo].[answers] ADD CONSTRAINT [fk_answer_instructor] FOREIGN KEY([instructor_id]) REFERENCES [dbo].[instructors] ([id]);
+ALTER TABLE [dbo].[answers] ADD CONSTRAINT [FK_Answer_Question] FOREIGN KEY([question_id]) REFERENCES [dbo].[questions] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[answers] ADD CONSTRAINT [fk_answer_student] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[bundle_courses] ADD CONSTRAINT [fk_bc_bundle] FOREIGN KEY([bundle_id]) REFERENCES [dbo].[bundles] ([id]);
+ALTER TABLE [dbo].[bundle_courses] ADD CONSTRAINT [fk_bc_course] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]);
+ALTER TABLE [dbo].[bundles] ADD CONSTRAINT [fk_bundle_instructor] FOREIGN KEY([instructor_id]) REFERENCES [dbo].[instructors] ([id]);
+ALTER TABLE [dbo].[cart_items] ADD CONSTRAINT [FK_CartItems_Cart] FOREIGN KEY([cart_id]) REFERENCES [dbo].[carts] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[cart_items] ADD CONSTRAINT [FK_CartItems_Courses] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[carts] ADD CONSTRAINT [FK_Carts_Students] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[carts] ADD CONSTRAINT [FKb5o626f86h46m4s7ms6ginnop] FOREIGN KEY([user_id]) REFERENCES [dbo].[users] ([id]);
+ALTER TABLE [dbo].[categories] ADD CONSTRAINT [FK_Category_Parent] FOREIGN KEY([parent_id]) REFERENCES [dbo].[categories] ([id]);
+ALTER TABLE [dbo].[certificates] ADD CONSTRAINT [FK_certificates_courses] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]);
+ALTER TABLE [dbo].[certificates] ADD CONSTRAINT [FK_certificates_students] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[certificates] ADD CONSTRAINT [FKjy46ubyh2tf64mgos6jgpcx4u] FOREIGN KEY([enrollment_id]) REFERENCES [dbo].[enrollments] ([id]);
+ALTER TABLE [dbo].[course_change_requests] ADD CONSTRAINT [FK_course_change_requests_admin] FOREIGN KEY([reviewed_by]) REFERENCES [dbo].[admins] ([id]);
+ALTER TABLE [dbo].[course_change_requests] ADD CONSTRAINT [FK_course_change_requests_course] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]);
+ALTER TABLE [dbo].[course_change_requests] ADD CONSTRAINT [FK_course_change_requests_instructor] FOREIGN KEY([instructor_id]) REFERENCES [dbo].[instructors] ([id]);
+ALTER TABLE [dbo].[courses] ADD CONSTRAINT [FK_Course_Category] FOREIGN KEY([category_id]) REFERENCES [dbo].[categories] ([id]);
+ALTER TABLE [dbo].[courses] ADD CONSTRAINT [FK_Course_Instructor] FOREIGN KEY([instructor_id]) REFERENCES [dbo].[instructors] ([id]);
+ALTER TABLE [dbo].[enrollments] ADD CONSTRAINT [FK_Enrollment_Course] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]);
+ALTER TABLE [dbo].[enrollments] ADD CONSTRAINT [FK_Enrollment_Student] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[instructors] ADD CONSTRAINT [FK_Instructor_Student] FOREIGN KEY([user_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[learning_progress] ADD CONSTRAINT [fk_lp_lesson] FOREIGN KEY([lesson_id]) REFERENCES [dbo].[lessons] ([id]);
+ALTER TABLE [dbo].[learning_progress] ADD CONSTRAINT [fk_lp_student] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[learning_progress] ADD CONSTRAINT [FK_Progress_Enrollment] FOREIGN KEY([enrollment_id]) REFERENCES [dbo].[enrollments] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[lesson_answers] ADD FOREIGN KEY([question_id]) REFERENCES [dbo].[lesson_questions] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[lesson_answers] ADD CONSTRAINT [FK_lesson_answers_student] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[lesson_answers] ADD CONSTRAINT [FKbvrxh1ouc4ovcqojhd8rfmc0g] FOREIGN KEY([instructor_id]) REFERENCES [dbo].[instructors] ([id]);
+ALTER TABLE [dbo].[lesson_questions] ADD CONSTRAINT [FK1idq14ntxt5avp1858vhq6ipm] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[lesson_questions] ADD CONSTRAINT [FKatf5xfuyd6pm1r44ew34rs6h4] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]);
+ALTER TABLE [dbo].[lesson_resources] ADD CONSTRAINT [FK_lesson_resources_lesson] FOREIGN KEY([lesson_id]) REFERENCES [dbo].[lessons] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[lessons] ADD CONSTRAINT [FK_Lesson_Quiz] FOREIGN KEY([quiz_id]) REFERENCES [dbo].[quizzes] ([id]);
+ALTER TABLE [dbo].[lessons] ADD CONSTRAINT [FK_Lesson_Section] FOREIGN KEY([section_id]) REFERENCES [dbo].[sections] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[notes] ADD CONSTRAINT [FK_notes_lesson] FOREIGN KEY([lesson_id]) REFERENCES [dbo].[lessons] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[notes] ADD CONSTRAINT [FK_notes_student] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[order_details] ADD CONSTRAINT [FK_OrderDetail_Course] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]);
+ALTER TABLE [dbo].[order_details] ADD CONSTRAINT [FK_OrderDetail_Order] FOREIGN KEY([order_id]) REFERENCES [dbo].[orders] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[order_items] ADD CONSTRAINT [FKbioxgbv59vetrxe0ejfubep1w] FOREIGN KEY([order_id]) REFERENCES [dbo].[orders] ([id]);
+ALTER TABLE [dbo].[order_items] ADD CONSTRAINT [FKy4aiomvn1gl62yjreckpt6lv] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]);
+ALTER TABLE [dbo].[orders] ADD CONSTRAINT [FK_Order_Student] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[payments] ADD CONSTRAINT [FK_Payments_Orders] FOREIGN KEY([order_id]) REFERENCES [dbo].[orders] ([id]);
+ALTER TABLE [dbo].[questions] ADD CONSTRAINT [FK_Question_Quiz] FOREIGN KEY([quiz_id]) REFERENCES [dbo].[quizzes] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[questions] ADD CONSTRAINT [FK6y78pbrt5dxp12ljsa8r1ey82] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]);
+ALTER TABLE [dbo].[questions] ADD CONSTRAINT [FKh5p1daykqg8iuhtcqn7t1kr6x] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[questions] ADD CONSTRAINT [FKmoaj9c9k8ncsywujtcaujs6rt] FOREIGN KEY([lesson_id]) REFERENCES [dbo].[lessons] ([id]);
+ALTER TABLE [dbo].[quiz_submissions] ADD CONSTRAINT [FK_Sub_Enrollment] FOREIGN KEY([enrollment_id]) REFERENCES [dbo].[enrollments] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[quiz_submissions] ADD CONSTRAINT [FK_Sub_Quiz] FOREIGN KEY([quiz_id]) REFERENCES [dbo].[quizzes] ([id]);
+ALTER TABLE [dbo].[quizzes] ADD CONSTRAINT [FK_Quiz_Section] FOREIGN KEY([section_id]) REFERENCES [dbo].[sections] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[ratings] ADD CONSTRAINT [FK_Rating_Course] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]);
+ALTER TABLE [dbo].[ratings] ADD CONSTRAINT [FK_Rating_Student] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[refund_requests] ADD CONSTRAINT [FK_refund_order] FOREIGN KEY([order_id]) REFERENCES [dbo].[orders] ([id]);
+ALTER TABLE [dbo].[refund_requests] ADD CONSTRAINT [FK_refund_student] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[sale_campaign_items] ADD CONSTRAINT [FK_CampaignItem_Campaign] FOREIGN KEY([campaign_id]) REFERENCES [dbo].[sale_campaigns] ([id]);
+ALTER TABLE [dbo].[sale_campaign_items] ADD CONSTRAINT [FK_CampaignItem_Course] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]);
+ALTER TABLE [dbo].[sections] ADD CONSTRAINT [FK_Section_Course] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[student_status_histories] ADD CONSTRAINT [FK8cuds0p1fpqlgx3x10kc2282] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[support_tickets] ADD CONSTRAINT [FKj8rqgxk7phdouudc29ugjem3j] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]);
+ALTER TABLE [dbo].[user_roles] ADD CONSTRAINT [FKh8ciramu9cc9q3qcqiv4ue8a6] FOREIGN KEY([role_id]) REFERENCES [dbo].[roles] ([id]);
+ALTER TABLE [dbo].[user_roles] ADD CONSTRAINT [FKhfh9dx7w3ubf1co1vdev94g3f] FOREIGN KEY([user_id]) REFERENCES [dbo].[users] ([id]);
+ALTER TABLE [dbo].[wishlists] ADD CONSTRAINT [FK_Wishlists_Courses] FOREIGN KEY([course_id]) REFERENCES [dbo].[courses] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[wishlists] ADD CONSTRAINT [FK_Wishlists_Students] FOREIGN KEY([student_id]) REFERENCES [dbo].[students] ([id]) ON DELETE CASCADE;
+ALTER TABLE [dbo].[withdraw_requests] ADD CONSTRAINT [FK_Withdraw_Instructors] FOREIGN KEY([instructor_id]) REFERENCES [dbo].[instructors] ([id]);
