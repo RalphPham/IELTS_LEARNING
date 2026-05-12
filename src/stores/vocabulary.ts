@@ -42,9 +42,17 @@ function buildCard(input: VocabularyInput): Vocabulary {
   }
 }
 
+function mergeSeed(existing: Vocabulary[]): Vocabulary[] {
+  const known = new Set(existing.map((it) => `${it.day}::${it.word.toLowerCase()}`))
+  const missing = seedVocabulary
+    .filter((s) => !known.has(`${s.day}::${s.word.toLowerCase()}`))
+    .map(buildCard)
+  return missing.length ? [...existing, ...missing] : existing
+}
+
 export const useVocabularyStore = defineStore('vocabulary', () => {
   const stored = loadFromStorage()
-  const items = ref<Vocabulary[]>(stored ?? seedVocabulary.map(buildCard))
+  const items = ref<Vocabulary[]>(stored ? mergeSeed(stored) : seedVocabulary.map(buildCard))
 
   watch(
     items,
