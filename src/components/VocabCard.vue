@@ -1,9 +1,14 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { Vocabulary } from '@/types/vocabulary'
 import { speak } from '@/utils/speech'
+import { MASTERY_META, classify, renderStars } from '@/utils/mastery'
 
-defineProps<{ card: Vocabulary }>()
+const props = defineProps<{ card: Vocabulary }>()
 defineEmits<{ (e: 'edit', id: string): void; (e: 'delete', id: string): void }>()
+
+const level = computed(() => classify(props.card))
+const meta = computed(() => MASTERY_META[level.value])
 </script>
 
 <template>
@@ -81,9 +86,15 @@ defineEmits<{ (e: 'edit', id: string): void; (e: 'delete', id: string): void }>(
     </p>
 
     <footer class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-3 text-xs text-slate-500 flex-wrap">
+      <span
+        class="px-2 py-0.5 rounded-full font-bold border"
+        :class="[meta.bg, meta.color, meta.border]"
+        :title="meta.label"
+      >
+        {{ renderStars(level) }} {{ meta.label }}
+      </span>
       <span class="px-1.5 py-0.5 rounded bg-slate-100 font-medium">{{ card.day }}</span>
       <span>Ôn: {{ card.repetitions }}</span>
-      <span>Khoảng: {{ card.interval }}d</span>
       <span class="ml-auto">Tiếp: {{ new Date(card.nextReviewDate).toLocaleDateString('vi-VN') }}</span>
     </footer>
   </article>

@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { Vocabulary } from '@/types/vocabulary'
 import { speak } from '@/utils/speech'
+import { MASTERY_META, classify, renderStars } from '@/utils/mastery'
 
-defineProps<{ card: Vocabulary }>()
+const props = defineProps<{ card: Vocabulary }>()
 defineEmits<{ (e: 'edit', id: string): void; (e: 'delete', id: string): void }>()
 
 const open = ref(false)
+const level = computed(() => classify(props.card))
+const meta = computed(() => MASTERY_META[level.value])
 </script>
 
 <template>
@@ -16,6 +19,11 @@ const open = ref(false)
       @click="open = !open"
     >
       <span class="text-slate-400 text-xs w-3 shrink-0">{{ open ? '▼' : '▶' }}</span>
+      <span
+        class="text-[10px] font-bold tracking-tighter shrink-0 w-12 text-center"
+        :class="meta.color"
+        :title="meta.label"
+      >{{ renderStars(level) }}</span>
       <span class="font-semibold text-slate-900 truncate flex-1 min-w-0">{{ card.word }}</span>
       <span v-if="card.pronunciation" class="hidden sm:inline text-xs text-slate-500 font-mono truncate max-w-[140px]">
         {{ card.pronunciation }}
