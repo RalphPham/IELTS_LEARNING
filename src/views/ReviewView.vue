@@ -18,22 +18,30 @@ const sessionCount = ref(0)
 const sessionCorrect = ref(0)
 const initialQueueSize = ref(0)
 
+// Session queue holds card IDs in current-session order. Wrong answers
+// cycle to the back so the user gets retried within the same session,
+// independent of the SRS due flag (which would otherwise loop on the
+// same card forever after an "again" grade).
+const sessionQueue = ref<string[]>([])
+
 const scopedCards = computed(() =>
   store.items.filter((it) => (selectedDay.value === null ? true : it.day === selectedDay.value)),
 )
 
-const queue = computed(() =>
+const dueQueue = computed(() =>
   store.dueCards.filter((it) => (selectedDay.value === null ? true : it.day === selectedDay.value)),
 )
 
-const current = computed<Vocabulary | null>(() =>
-  sessionActive.value ? queue.value[0] ?? null : null,
-)
+const current = computed<Vocabulary | null>(() => {
+  if (!sessionActive.value) return null
+  const id = sessionQueue.value[0]
+  return id ? store.getById(id) : null
+})
 
 const progressPct = computed(() => {
   const total = initialQueueSize.value
   if (total === 0) return 0
-  return Math.round(((total - queue.value.length) / total) * 100)
+  return Math.round(((total - sessionQueue.value.length) / total) * 100)
 })
 
 watch(current, () => {
@@ -47,16 +55,28 @@ watch(selectedDay, () => {
 })
 
 function startSession() {
-  if (queue.value.length === 0) return
+  const ids = dueQueue.value.map((c) => c.id)
+  if (ids.length === 0) return
+  sessionQueue.value = [...ids].sort(() => Math.random() - 0.5)
   sessionActive.value = true
   sessionCount.value = 0
   sessionCorrect.value = 0
-  initialQueueSize.value = queue.value.length
+  initialQueueSize.value = sessionQueue.value.length
   flipped.value = false
 }
 
 function endSession() {
   sessionActive.value = false
+  sessionQueue.value = []
+  flipped.value = false
+}
+
+function advance(wasCorrect: boolean) {
+  const id = sessionQueue.value.shift()
+  if (id && !wasCorrect) {
+    // Send wrong card to the back; user will retry it later in this session
+    sessionQueue.value.push(id)
+  }
   flipped.value = false
 }
 
@@ -77,17 +97,15 @@ function grade(g: ReviewGrade) {
   store.grade(current.value.id, g)
   sessionCount.value += 1
   if (g !== 'again') sessionCorrect.value += 1
-  flipped.value = false
+  advance(g !== 'again')
 }
 
-function onQuizAnswer(correct: boolean) {
+function onQuizDone(correct: boolean) {
   if (!current.value) return
-  const id = current.value.id
-  setTimeout(() => {
-    store.grade(id, correct ? 'good' : 'again')
-    sessionCount.value += 1
-    if (correct) sessionCorrect.value += 1
-  }, 1500)
+  store.grade(current.value.id, correct ? 'good' : 'again')
+  sessionCount.value += 1
+  if (correct) sessionCorrect.value += 1
+  advance(correct)
 }
 
 function handleKey(e: KeyboardEvent) {
@@ -140,7 +158,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKey))
       <section class="rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg p-5 mb-4">
         <p class="text-xs uppercase tracking-widest font-bold opacity-80">Sẵn sàng ôn</p>
         <div class="flex items-end gap-2 mt-1">
-          <span class="text-5xl font-black">{{ queue.length }}</span>
+          <span class="text-5xl font-black">{{ dueQueue.length }}</span>
           <span class="text-sm opacity-90 pb-2">thẻ đến hạn</span>
         </div>
 
@@ -170,10 +188,10 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKey))
 
         <button
           class="mt-5 w-full px-5 py-3 rounded-xl bg-white text-indigo-700 font-bold hover:bg-indigo-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
-          :disabled="queue.length === 0"
+          :disabled="dueQueue.length === 0"
           @click="startSession"
         >
-          {{ queue.length === 0 ? 'Không có thẻ đến hạn' : `Bắt đầu ôn ${queue.length} thẻ` }}
+          {{ dueQueue.length === 0 ? 'Không có thẻ đến hạn' : `Bắt đầu ôn ${dueQueue.length} thẻ` }}
         </button>
       </section>
 
@@ -189,7 +207,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKey))
           ← Kết thúc
         </button>
         <div class="text-sm text-slate-600">
-          Còn: <span class="font-bold text-indigo-700">{{ queue.length }}</span>
+          Còn: <span class="font-bold text-indigo-700">{{ sessionQueue.length }}</span>
           · Đúng: <span class="font-bold text-emerald-700">{{ sessionCorrect }}/{{ sessionCount }}</span>
         </div>
       </div>
@@ -215,10 +233,10 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKey))
 
       <QuizCard
         v-else-if="mode === 'quiz'"
-        :key="current.id"
+        :key="current.id + '-' + sessionCount"
         :card="current"
         :pool="scopedCards"
-        @answered="onQuizAnswer"
+        @done="onQuizDone"
       />
 
       <div v-else class="space-y-4">

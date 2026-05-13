@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Vocabulary } from '@/types/vocabulary'
 import { speak } from '@/utils/speech'
 
@@ -10,7 +10,7 @@ const props = defineProps<{
   pool: Vocabulary[]
 }>()
 
-const emit = defineEmits<{ (e: 'answered', correct: boolean): void }>()
+const emit = defineEmits<{ (e: 'done', correct: boolean): void }>()
 
 function pickType(card: Vocabulary): QuestionType {
   const opts: QuestionType[] = ['wordToVi', 'viToWord']
@@ -80,8 +80,31 @@ const isAnswered = computed(() => selected.value !== null)
 function pick(opt: string) {
   if (isAnswered.value) return
   selected.value = opt
-  emit('answered', opt === correctAnswer.value)
 }
+
+function next() {
+  if (!isAnswered.value) return
+  emit('done', selected.value === correctAnswer.value)
+}
+
+function handleKey(e: KeyboardEvent) {
+  if (!isAnswered.value) {
+    const idx = ['1', '2', '3', '4', 'a', 'b', 'c', 'd', 'A', 'B', 'C', 'D'].indexOf(e.key)
+    if (idx >= 0) {
+      const optIdx = idx % 4
+      const opt = options.value[optIdx]
+      if (opt) pick(opt)
+    }
+    return
+  }
+  if (e.code === 'Space' || e.code === 'Enter') {
+    e.preventDefault()
+    next()
+  }
+}
+
+onMounted(() => window.addEventListener('keydown', handleKey))
+onBeforeUnmount(() => window.removeEventListener('keydown', handleKey))
 
 function classFor(opt: string): string {
   if (!isAnswered.value) {
@@ -143,6 +166,14 @@ function classFor(opt: string): string {
       <!-- Feedback panel -->
       <div v-if="isAnswered" class="mt-5 pt-5 border-t border-slate-100 space-y-2">
         <div class="flex items-center gap-2 flex-wrap">
+          <span
+            class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+            :class="selected === correctAnswer ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'"
+          >
+            {{ selected === correctAnswer ? '✓ Đúng' : '✗ Sai — sẽ hỏi lại sau' }}
+          </span>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
           <h3 class="text-xl font-bold text-slate-900">{{ card.word }}</h3>
           <button class="text-indigo-600 text-xl hover:scale-110 transition" @click="speak(card.word)">🔊</button>
           <span v-if="card.pronunciation" class="text-sm text-slate-500 font-mono">{{ card.pronunciation }}</span>
@@ -158,6 +189,21 @@ function classFor(opt: string): string {
             <span>{{ ex }}</span>
           </li>
         </ul>
+        <div v-if="card.collocations.length" class="flex flex-wrap gap-1.5 pt-1">
+          <span v-for="(c, i) in card.collocations" :key="i" class="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+            {{ c }}
+          </span>
+        </div>
+
+        <button
+          class="mt-4 w-full px-5 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition"
+          @click="next"
+        >
+          Tiếp tục →
+        </button>
+        <p class="text-center text-[11px] text-slate-400">
+          Phím tắt: <kbd class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 font-mono">Space</kbd> / <kbd class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 font-mono">Enter</kbd>
+        </p>
       </div>
     </div>
   </div>
