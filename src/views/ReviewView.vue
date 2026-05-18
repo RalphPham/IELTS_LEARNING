@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useVocabularyStore } from '@/stores/vocabulary'
 import type { ReviewGrade, Vocabulary } from '@/types/vocabulary'
 import { applyGrade } from '@/utils/srs'
@@ -8,9 +9,13 @@ import MasteryStats from '@/components/MasteryStats.vue'
 import QuizCard from '@/components/QuizCard.vue'
 
 type Mode = 'flashcard' | 'quiz'
+type Scope = 'due' | 'all'
 
 const store = useVocabularyStore()
+const route = useRoute()
+const router = useRouter()
 const selectedDay = ref<string | null>(null)
+const scope = ref<Scope>('due')
 const mode = ref<Mode>('flashcard')
 const sessionActive = ref(false)
 const flipped = ref(false)
@@ -32,6 +37,14 @@ const dueQueue = computed(() =>
   store.dueCards.filter((it) => (selectedDay.value === null ? true : it.day === selectedDay.value)),
 )
 
+// The pool used to actually build a session, depending on scope:
+//  - 'due': only cards whose nextReviewDate <= now (default SRS behavior)
+//  - 'all': every card in the selected scope, regardless of due date
+//    (use this for on-demand re-review of a whole day's vocab)
+const sessionSourceCount = computed(() =>
+  scope.value === 'due' ? dueQueue.value.length : scopedCards.value.length,
+)
+
 const current = computed<Vocabulary | null>(() => {
   if (!sessionActive.value) return null
   const id = sessionQueue.value[0]
@@ -48,14 +61,15 @@ watch(current, () => {
   flipped.value = false
 })
 
-watch(selectedDay, () => {
+watch([selectedDay, scope], () => {
   sessionActive.value = false
   sessionCount.value = 0
   sessionCorrect.value = 0
 })
 
 function startSession() {
-  const ids = dueQueue.value.map((c) => c.id)
+  const source = scope.value === 'due' ? dueQueue.value : scopedCards.value
+  const ids = source.map((c) => c.id)
   if (ids.length === 0) return
   sessionQueue.value = [...ids].sort(() => Math.random() - 0.5)
   sessionActive.value = true
@@ -126,8 +140,32 @@ function handleKey(e: KeyboardEvent) {
   } else if (e.key === '4') grade('easy')
 }
 
-onMounted(() => window.addEventListener('keydown', handleKey))
+onMounted(() => {
+  window.addEventListener('keydown', handleKey)
+
+  // Read deep-link query params: /review?day=Day+4&scope=all&start=1
+  const qDay = route.query.day
+  if (typeof qDay === 'string' && store.days.includes(qDay)) {
+    selectedDay.value = qDay
+  }
+  const qScope = route.query.scope
+  if (qScope === 'all' || qScope === 'due') {
+    scope.value = qScope
+  }
+  if (route.query.start === '1') {
+    // Auto-start the session if the link asked for it
+    setTimeout(() => startSession(), 0)
+  }
+})
+
 onBeforeUnmount(() => window.removeEventListener('keydown', handleKey))
+
+function quickStart(day: string, s: Scope = 'all') {
+  selectedDay.value = day
+  scope.value = s
+  router.replace({ query: { day, scope: s } })
+  startSession()
+}
 </script>
 
 <template>
@@ -158,8 +196,34 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKey))
       <section class="rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg p-5 mb-4">
         <p class="text-xs uppercase tracking-widest font-bold opacity-80">Sẵn sàng ôn</p>
         <div class="flex items-end gap-2 mt-1">
-          <span class="text-5xl font-black">{{ dueQueue.length }}</span>
-          <span class="text-sm opacity-90 pb-2">thẻ đến hạn</span>
+          <span class="text-5xl font-black">{{ sessionSourceCount }}</span>
+          <span class="text-sm opacity-90 pb-2">
+            {{ scope === 'due' ? 'thẻ đến hạn' : 'thẻ trong phạm vi' }}
+          </span>
+        </div>
+
+        <div class="mt-4">
+          <p class="text-[10px] uppercase tracking-widest font-bold opacity-80 mb-2">Phạm vi thẻ</p>
+          <div class="flex rounded-xl bg-white/10 p-1 backdrop-blur">
+            <button
+              class="flex-1 px-3 py-2 rounded-lg text-sm font-bold transition"
+              :class="scope === 'due' ? 'bg-white text-indigo-700 shadow' : 'text-white hover:bg-white/10'"
+              @click="scope = 'due'"
+            >
+              ⏰ Đến hạn
+            </button>
+            <button
+              class="flex-1 px-3 py-2 rounded-lg text-sm font-bold transition"
+              :class="scope === 'all' ? 'bg-white text-indigo-700 shadow' : 'text-white hover:bg-white/10'"
+              @click="scope = 'all'"
+            >
+              📚 Tất cả thẻ
+            </button>
+          </div>
+          <p class="text-[11px] opacity-80 mt-1.5">
+            <span v-if="scope === 'due'">Chỉ ôn thẻ đến lịch lặp lại.</span>
+            <span v-else>Ôn lại tất cả thẻ trong phạm vi (không quan tâm hạn).</span>
+          </p>
         </div>
 
         <div class="mt-4">
@@ -180,19 +244,34 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKey))
               📝 Trắc nghiệm
             </button>
           </div>
-          <p class="text-xs opacity-80 mt-2">
-            <span v-if="mode === 'flashcard'">Tự đánh giá độ nhớ: Quên / Khó / Tốt / Dễ.</span>
-            <span v-else>4 đáp án — kiểm tra nghĩa, từ vựng và điền chỗ trống.</span>
-          </p>
         </div>
 
         <button
           class="mt-5 w-full px-5 py-3 rounded-xl bg-white text-indigo-700 font-bold hover:bg-indigo-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
-          :disabled="dueQueue.length === 0"
+          :disabled="sessionSourceCount === 0"
           @click="startSession"
         >
-          {{ dueQueue.length === 0 ? 'Không có thẻ đến hạn' : `Bắt đầu ôn ${dueQueue.length} thẻ` }}
+          {{ sessionSourceCount === 0 ? 'Không có thẻ' : `Bắt đầu ôn ${sessionSourceCount} thẻ` }}
         </button>
+      </section>
+
+      <!-- Quick-start review by Day -->
+      <section class="rounded-2xl bg-white border border-slate-200 shadow-sm p-5 mb-4">
+        <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Ôn nhanh theo buổi</h2>
+        <p class="text-xs text-slate-500 mb-3">Chọn 1 buổi để ôn lại toàn bộ từ trong buổi đó (không cần đến hạn).</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <button
+            v-for="d in store.days"
+            :key="d"
+            class="px-3 py-2.5 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 text-left transition"
+            @click="quickStart(d, 'all')"
+          >
+            <div class="text-sm font-bold text-slate-900">{{ d }}</div>
+            <div class="text-[10px] text-slate-500 mt-0.5">
+              {{ store.items.filter((it) => it.day === d).length }} thẻ — ôn tất cả
+            </div>
+          </button>
+        </div>
       </section>
 
       <RouterLink to="/" class="block text-center text-sm text-slate-500 hover:text-indigo-700">
