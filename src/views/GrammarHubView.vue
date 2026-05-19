@@ -22,8 +22,9 @@ const tensesByGroup = computed(() => {
 
 function stats(tenseId: string) {
   const p = store.getForTense(tenseId as never)
-  const count = questionsForTense(tenseId).length
-  return { progress: p, count }
+  const seedCount = questionsForTense(tenseId).length
+  const userCount = store.userQuestions.filter((q) => q.tenseId === tenseId).length
+  return { progress: p, count: seedCount + userCount, userCount }
 }
 
 function formatPct(n: number): string {
@@ -40,12 +41,23 @@ function formatPct(n: number): string {
           Công thức · cách dùng · ví dụ đời thường · {{ QUESTIONS.length }} câu luyện tập
         </p>
       </div>
-      <RouterLink
-        to="/grammar/mixed"
-        class="px-4 py-2 rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition text-sm"
-      >
-        🎯 Test tổng hợp
-      </RouterLink>
+      <div class="flex gap-2 flex-wrap">
+        <RouterLink
+          to="/grammar/import"
+          class="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition text-sm"
+        >
+          📥 Nhập câu hỏi
+          <span v-if="store.userQuestionCount > 0" class="ml-1 text-xs text-indigo-600">
+            ({{ store.userQuestionCount }})
+          </span>
+        </RouterLink>
+        <RouterLink
+          to="/grammar/mixed"
+          class="px-4 py-2 rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition text-sm"
+        >
+          🎯 Test tổng hợp
+        </RouterLink>
+      </div>
     </div>
 
     <div v-for="group in tensesByGroup" :key="group.id" class="mb-6">
@@ -82,8 +94,11 @@ function formatPct(n: number): string {
             {{ t.formula.affirmative }}
           </p>
           <p class="text-[10px] text-slate-400 mt-2 uppercase tracking-wider">
-            {{ stats(t.id).count }} câu luyện tập
-            <span v-if="stats(t.id).progress">· {{ stats(t.id).progress!.attempts }} lượt làm</span>
+            {{ stats(t.id).count }} câu
+            <span v-if="stats(t.id).userCount > 0" class="text-indigo-500">
+              (+{{ stats(t.id).userCount }} tự thêm)
+            </span>
+            <span v-if="stats(t.id).progress">· {{ stats(t.id).progress!.attempts }} lượt</span>
           </p>
         </RouterLink>
       </div>

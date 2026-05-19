@@ -29,6 +29,11 @@ const router = createRouter({
       component: () => import('@/views/GrammarHubView.vue'),
     },
     {
+      path: '/grammar/import',
+      name: 'grammar-import',
+      component: () => import('@/views/GrammarImportView.vue'),
+    },
+    {
       // Mixed test — uses a sentinel id 'mixed' read by the practice view
       path: '/grammar/mixed',
       name: 'grammar-mixed',

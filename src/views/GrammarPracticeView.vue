@@ -6,6 +6,10 @@ import { QUESTIONS, questionsForTense } from '@/data/grammar/questions'
 import { useGrammarStore } from '@/stores/grammar'
 import type { GrammarQuestion, TenseId } from '@/types/grammar'
 
+function combinedFor(tenseId: string, userQs: GrammarQuestion[]): GrammarQuestion[] {
+  return [...questionsForTense(tenseId), ...userQs.filter((q) => q.tenseId === tenseId)]
+}
+
 const route = useRoute()
 const router = useRouter()
 const store = useGrammarStore()
@@ -22,10 +26,11 @@ function shuffle<T>(arr: T[]): T[] {
 
 function buildPool(): GrammarQuestion[] {
   if (isMixed.value) {
-    return shuffle(QUESTIONS).slice(0, 25) // mixed test = 25 random
+    const all = [...QUESTIONS, ...store.userQuestions]
+    return shuffle(all).slice(0, 25) // mixed test = 25 random
   }
   if (!tense.value) return []
-  const all = questionsForTense(tense.value.id)
+  const all = combinedFor(tense.value.id, store.userQuestions)
   if (onlyWrong.value) {
     const progress = store.getForTense(tense.value.id)
     if (progress && progress.wrongIds.length > 0) {

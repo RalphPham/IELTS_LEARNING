@@ -14,9 +14,13 @@ const tense = computed(() => {
   return findTense(id) ?? null
 })
 
-const questionCount = computed(() =>
+const seedCount = computed(() =>
   tense.value ? questionsForTense(tense.value.id).length : 0,
 )
+const userCount = computed(() =>
+  tense.value ? store.userQuestions.filter((q) => q.tenseId === tense.value!.id).length : 0,
+)
+const questionCount = computed(() => seedCount.value + userCount.value)
 
 const progress = computed(() => (tense.value ? store.getForTense(tense.value.id) : null))
 </script>
@@ -104,6 +108,9 @@ const progress = computed(() => (tense.value ? store.getForTense(tense.value.id)
         <span class="text-4xl font-black">{{ questionCount }}</span>
         <span class="text-sm opacity-90 pb-1.5">câu</span>
       </div>
+      <p v-if="userCount > 0" class="text-xs opacity-90 mt-1">
+        Bao gồm <strong>{{ userCount }}</strong> câu bạn tự thêm
+      </p>
       <p v-if="progress" class="text-xs opacity-90 mt-2">
         Đã làm {{ progress.attempts }} lượt · điểm gần nhất: {{ Math.round(progress.lastScore * 100) }}%
         · {{ progress.wrongIds.length }} câu cần ôn lại
@@ -121,6 +128,12 @@ const progress = computed(() => (tense.value ? store.getForTense(tense.value.id)
           class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 font-bold transition"
         >
           Làm lại câu sai ({{ progress.wrongIds.length }})
+        </RouterLink>
+        <RouterLink
+          to="/grammar/import"
+          class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 font-bold transition"
+        >
+          + Thêm câu hỏi
         </RouterLink>
       </div>
     </section>

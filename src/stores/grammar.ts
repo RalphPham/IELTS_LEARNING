@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
-import type { GrammarProgressMap, TenseId } from '@/types/grammar'
+import { computed, ref, watch } from 'vue'
+import type { GrammarProgressMap, GrammarQuestion, TenseId } from '@/types/grammar'
 
-const STORAGE_KEY = 'grammar.v1'
+const PROGRESS_KEY = 'grammar.v1'
+const USER_QUESTIONS_KEY = 'grammar.userQuestions.v1'
 
-function load(): GrammarProgressMap {
+function loadProgress(): GrammarProgressMap {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    const raw = localStorage.getItem(PROGRESS_KEY)
     if (!raw) return {}
     const parsed = JSON.parse(raw)
     return typeof parsed === 'object' && parsed !== null ? parsed : {}
@@ -15,13 +16,37 @@ function load(): GrammarProgressMap {
   }
 }
 
+function loadUserQuestions(): GrammarQuestion[] {
+  try {
+    const raw = localStorage.getItem(USER_QUESTIONS_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
+
+function uid() {
+  return 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7)
+}
+
 export const useGrammarStore = defineStore('grammar', () => {
-  const progress = ref<GrammarProgressMap>(load())
+  const progress = ref<GrammarProgressMap>(loadProgress())
+  const userQuestions = ref<GrammarQuestion[]>(loadUserQuestions())
 
   watch(
     progress,
     (val) => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(val))
+    },
+    { deep: true },
+  )
+
+  watch(
+    userQuestions,
+    (val) => {
+      localStorage.setItem(USER_QUESTIONS_KEY, JSON.stringify(val))
     },
     { deep: true },
   )
@@ -64,5 +89,64 @@ export const useGrammarStore = defineStore('grammar', () => {
     return progress.value[tenseId] ?? null
   }
 
-  return { progress, recordSession, reset, getForTense }
+  // ============ User questions CRUD ============
+  function addUserQuestion(q: Omit<GrammarQuestion, 'id'>): string {
+    const id = uid()
+    userQuestions.value.push({ ...q, id })
+    return id
+  }
+
+  function addUserQuestions(qs: Array<Omit<GrammarQuestion, 'id'>>): string[] {
+    const ids: string[] = []
+    qs.forEach((q) => {
+      const id = uid()
+      userQuestions.value.push({ ...q, id })
+      ids.push(id)
+    })
+    return ids
+  }
+
+  function removeUserQuestion(id: string) {
+    userQuestions.value = userQuestions.value.filter((q) => q.id !== id)
+  }
+
+  function updateUserQuestion(id: string, patch: Partial<GrammarQuestion>) {
+    const idx = userQuestions.value.findIndex((q) => q.id === id)
+    if (idx === -1) return
+    const cur = userQuestions.value[idx]
+    if (!cur) return
+    userQuestions.value[idx] = { ...cur, ...patch, id: cur.id }
+  }
+
+  function userQuestionsFor(tenseId: TenseId): GrammarQuestion[] {
+    return userQuestions.value.filter((q) => q.tenseId === tenseId)
+  }
+
+  const userQuestionCount = computed(() => userQuestions.value.length)
+
+  function exportUserQuestionsJson(): string {
+    return JSON.stringify(userQuestions.value, null, 2)
+  }
+
+  function importUserQuestionsJson(json: string) {
+    const data = JSON.parse(json)
+    if (!Array.isArray(data)) throw new Error('Invalid format')
+    userQuestions.value = data as GrammarQuestion[]
+  }
+
+  return {
+    progress,
+    userQuestions,
+    userQuestionCount,
+    recordSession,
+    reset,
+    getForTense,
+    addUserQuestion,
+    addUserQuestions,
+    removeUserQuestion,
+    updateUserQuestion,
+    userQuestionsFor,
+    exportUserQuestionsJson,
+    importUserQuestionsJson,
+  }
 })
