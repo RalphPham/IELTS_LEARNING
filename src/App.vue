@@ -71,6 +71,13 @@ onMounted(() => {
             </span>
           </RouterLink>
           <RouterLink
+            to="/grammar"
+            class="rounded-full px-4 py-1.5 transition hover:bg-white hover:text-sky-700"
+            active-class="bg-white text-sky-700 shadow-sm"
+          >
+            Ngữ pháp
+          </RouterLink>
+          <RouterLink
             to="/add"
             class="rounded-full px-4 py-1.5 transition hover:bg-white hover:text-fuchsia-700"
             active-class="bg-white text-fuchsia-700 shadow-sm"
