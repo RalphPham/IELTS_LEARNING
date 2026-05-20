@@ -27,6 +27,12 @@ function stats(tenseId: string) {
   return { progress: p, count: seedCount + userCount, userCount }
 }
 
+const sequencingCount = computed(
+  () =>
+    questionsForTense('sequencing').length +
+    store.userQuestions.filter((q) => q.tenseId === 'sequencing').length,
+)
+
 function formatPct(n: number): string {
   return Math.round(n * 100) + '%'
 }
@@ -59,6 +65,25 @@ function formatPct(n: number): string {
         </RouterLink>
       </div>
     </div>
+
+    <!-- Featured: Sự phối thì -->
+    <RouterLink
+      to="/grammar/sequencing"
+      class="block rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-4 mb-6 hover:shadow-md transition"
+    >
+      <div class="flex items-center gap-3">
+        <div class="text-3xl">🔗</div>
+        <div class="flex-1 min-w-0">
+          <h3 class="font-bold text-slate-900">Sự phối thì</h3>
+          <p class="text-xs text-slate-600 mt-0.5">
+            Cách chia động từ theo liên từ thời gian (when, while, as soon as, since, by the time…)
+          </p>
+        </div>
+        <span class="text-[10px] uppercase tracking-wider font-bold text-amber-700 shrink-0">
+          {{ sequencingCount }} câu →
+        </span>
+      </div>
+    </RouterLink>
 
     <div v-for="group in tensesByGroup" :key="group.id" class="mb-6">
       <div class="flex items-center gap-2 mb-3">

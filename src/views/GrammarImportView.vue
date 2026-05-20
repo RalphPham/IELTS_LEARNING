@@ -211,6 +211,7 @@ function importJson(e: Event) {
             <option v-for="t in TENSES" :key="t.id" :value="t.id">
               {{ t.emoji }} {{ t.nameVi }} ({{ t.name }})
             </option>
+            <option value="sequencing">🔗 Sự phối thì (Tense Coordination)</option>
           </select>
         </div>
       </div>

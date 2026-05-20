@@ -17,7 +17,10 @@ const store = useGrammarStore()
 // /grammar/mixed has no :id param. Detect it via the route name.
 const isMixed = computed(() => route.name === 'grammar-mixed')
 const tenseIdParam = computed(() => (route.params.id as string) ?? '')
+const isSequencing = computed(() => tenseIdParam.value === 'sequencing')
 const tense = computed(() => (isMixed.value ? null : findTense(tenseIdParam.value) ?? null))
+// The topic id used for filtering / progress — a tense id or 'sequencing'
+const topicId = computed<string>(() => tense.value?.id ?? (isSequencing.value ? 'sequencing' : ''))
 const onlyWrong = computed(() => route.query.wrong === '1')
 
 function shuffle<T>(arr: T[]): T[] {
@@ -29,10 +32,10 @@ function buildPool(): GrammarQuestion[] {
     const all = [...QUESTIONS, ...store.userQuestions]
     return shuffle(all).slice(0, 25) // mixed test = 25 random
   }
-  if (!tense.value) return []
-  const all = combinedFor(tense.value.id, store.userQuestions)
+  if (!topicId.value) return []
+  const all = combinedFor(topicId.value, store.userQuestions)
   if (onlyWrong.value) {
-    const progress = store.getForTense(tense.value.id)
+    const progress = store.getForTense(topicId.value as TenseId)
     if (progress && progress.wrongIds.length > 0) {
       const set = new Set(progress.wrongIds)
       return shuffle(all.filter((q) => set.has(q.id)))
@@ -89,9 +92,9 @@ function next() {
 }
 
 function finishSession() {
-  // Record stats for single-tense sessions (mixed does not write to a single tense)
-  if (!isMixed.value && tense.value) {
-    store.recordSession(tense.value.id as TenseId, answeredIds.value, wrongIds.value)
+  // Record stats for single-topic sessions (mixed does not write to one topic)
+  if (!isMixed.value && topicId.value) {
+    store.recordSession(topicId.value as TenseId, answeredIds.value, wrongIds.value)
   }
   completed.value = true
 }
@@ -109,6 +112,7 @@ function restart() {
 
 function back() {
   if (isMixed.value) router.push('/grammar')
+  else if (isSequencing.value) router.push('/grammar/sequencing')
   else router.push(`/grammar/${tense.value?.id ?? ''}`)
 }
 
@@ -200,7 +204,7 @@ const accuracy = computed(() => {
 
       <div class="rounded-3xl bg-white border border-slate-200 shadow-lg p-6">
         <div class="flex items-center justify-between text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-3">
-          <span>{{ findTense(current.tenseId)?.nameVi ?? 'Mixed' }}</span>
+          <span>{{ findTense(current.tenseId)?.nameVi ?? (current.tenseId === 'sequencing' ? 'Sự phối thì' : 'Mixed') }}</span>
           <span>{{ current.type === 'mcq' ? 'Trắc nghiệm' : 'Điền vào chỗ trống' }}</span>
         </div>
 

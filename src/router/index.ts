@@ -41,6 +41,12 @@ const router = createRouter({
       props: { id: 'mixed' },
     },
     {
+      // Special topic: tense coordination — must come before /grammar/:id
+      path: '/grammar/sequencing',
+      name: 'grammar-sequencing',
+      component: () => import('@/views/GrammarSequencingView.vue'),
+    },
+    {
       path: '/grammar/:id',
       name: 'grammar-tense',
       component: () => import('@/views/GrammarTenseView.vue'),

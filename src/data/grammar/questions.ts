@@ -1,10 +1,11 @@
 import type { GrammarQuestion } from '@/types/grammar'
+import { SEQUENCING_QUESTIONS } from './sequencingQuestions'
 
 // Question bank — written in everyday contexts (work, apps, family, travel...)
 // Aim: cover the main usages of each tense with both MCQ and fill-in styles.
 // Each question carries an `explanation` shown when the user answers wrong.
 
-export const QUESTIONS: GrammarQuestion[] = [
+const BASE_QUESTIONS: GrammarQuestion[] = [
   // ============ PRESENT SIMPLE ============
   {
     id: 'ps_001',
@@ -1459,6 +1460,9 @@ export const QUESTIONS: GrammarQuestion[] = [
     explanation: 'Thời lượng tròn đến mốc tương lai → Future Perfect Continuous.',
   },
 ]
+
+// All built-in questions: the 12 tenses + the tense-coordination topic.
+export const QUESTIONS: GrammarQuestion[] = [...BASE_QUESTIONS, ...SEQUENCING_QUESTIONS]
 
 export function questionsForTense(tenseId: string): GrammarQuestion[] {
   return QUESTIONS.filter((q) => q.tenseId === tenseId)

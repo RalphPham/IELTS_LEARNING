@@ -11,6 +11,8 @@ export type TenseId =
   | 'future_continuous'
   | 'future_perfect'
   | 'future_perfect_continuous'
+  // Special topic: tense coordination with time conjunctions
+  | 'sequencing'
 
 export type TenseGroup = 'present' | 'past' | 'future'
 
@@ -64,3 +66,19 @@ export interface TenseProgress {
 }
 
 export type GrammarProgressMap = Partial<Record<TenseId, TenseProgress>>
+
+// ===== Tense-coordination (sự phối thì) reference data =====
+export interface SequencingPattern {
+  /** When this pattern applies, in Vietnamese */
+  situation: string
+  /** The structural pattern, e.g. "WHEN + S + V(past), S + V(past)" */
+  pattern: string
+  /** A vivid everyday example */
+  example: string
+}
+
+export interface SequencingRule {
+  conjunction: string
+  meaningVi: string
+  patterns: SequencingPattern[]
+}
