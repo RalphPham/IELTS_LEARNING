@@ -15,12 +15,25 @@ const store = useVocabularyStore()
 const week = computed(() => parseInt((route.params.week as string) ?? '1', 10) || 1)
 const weekItems = computed(() => itemsInWeek(store.items, week.value))
 
-const SKILLS: { id: Skill; label: string; emoji: string; desc: string; size: number }[] = [
-  { id: 'listening', label: 'Nghe', emoji: '🎧', desc: 'Nghe từ và gõ lại — luyện chính tả & nghe', size: 15 },
-  { id: 'speaking', label: 'Nói', emoji: '🗣️', desc: 'Nhìn nghĩa, nói thành tiếng, tự đánh giá', size: 12 },
-  { id: 'reading', label: 'Đọc', emoji: '📖', desc: 'Đọc câu, điền từ còn thiếu — luyện hiểu ngữ cảnh', size: 15 },
-  { id: 'writing', label: 'Viết', emoji: '✍️', desc: 'Tự đặt câu với từ, so với câu mẫu', size: 12 },
+const SKILLS: { id: Skill; label: string; emoji: string; desc: string }[] = [
+  { id: 'listening', label: 'Nghe', emoji: '🎧', desc: 'Nghe từ và gõ lại — luyện chính tả & nghe' },
+  { id: 'speaking', label: 'Nói', emoji: '🗣️', desc: 'Nhìn nghĩa, nói thành tiếng, tự đánh giá' },
+  { id: 'reading', label: 'Đọc', emoji: '📖', desc: 'Đọc câu, điền từ còn thiếu — luyện hiểu ngữ cảnh' },
+  { id: 'writing', label: 'Viết', emoji: '✍️', desc: 'Tự đặt câu với từ, so với câu mẫu' },
 ]
+
+// How many questions per skill session — the user picks before starting.
+const SIZE_OPTIONS = [
+  { value: 20, label: 'Nhanh · 20 câu' },
+  { value: 40, label: 'Vừa · 40 câu' },
+  { value: 80, label: 'Dày · 80 câu' },
+  { value: 0, label: 'Tất cả từ trong tuần' },
+]
+const sessionSize = ref(40)
+
+function effectiveSize(): number {
+  return sessionSize.value === 0 ? weekItems.value.length : sessionSize.value
+}
 
 // ----- session state -----
 const skill = ref<Skill | null>(null)
@@ -49,9 +62,8 @@ function normalize(s: string): string {
 }
 
 function startSkill(s: Skill) {
-  const meta = SKILLS.find((x) => x.id === s)!
   skill.value = s
-  cards.value = shuffle(weekItems.value).slice(0, meta.size)
+  cards.value = shuffle(weekItems.value).slice(0, effectiveSize())
   index.value = 0
   done.value = 0
   correct.value = 0
@@ -157,20 +169,43 @@ const accuracy = computed(() =>
         Tuần này chưa có từ vựng nào.
       </div>
 
-      <div v-else class="grid sm:grid-cols-2 gap-3">
-        <button
-          v-for="s in SKILLS"
-          :key="s.id"
-          class="text-left rounded-2xl bg-white border border-slate-200 p-5 hover:border-indigo-400 hover:shadow-md transition"
-          @click="startSkill(s.id)"
-        >
-          <div class="text-3xl mb-2">{{ s.emoji }}</div>
-          <h3 class="font-bold text-slate-900">{{ s.label }}</h3>
-          <p class="text-xs text-slate-500 mt-1 leading-relaxed">{{ s.desc }}</p>
-          <p class="text-[10px] uppercase tracking-wider text-indigo-500 font-bold mt-2">
-            {{ Math.min(s.size, weekItems.length) }} câu
+      <div v-else>
+        <!-- Session length picker -->
+        <div class="rounded-2xl bg-white border border-slate-200 p-4 mb-3">
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Độ dài mỗi bài</p>
+          <div class="flex flex-wrap gap-2">
+            <button
+              v-for="opt in SIZE_OPTIONS"
+              :key="opt.value"
+              class="px-3 py-1.5 rounded-lg text-sm font-semibold border transition"
+              :class="sessionSize === opt.value
+                ? 'bg-indigo-600 text-white border-indigo-600'
+                : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-400'"
+              @click="sessionSize = opt.value"
+            >
+              {{ opt.label }}
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-2">
+            Mỗi bài sẽ có {{ Math.min(effectiveSize(), weekItems.length) }} câu (lấy ngẫu nhiên từ {{ weekItems.length }} từ trong tuần).
           </p>
-        </button>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-3">
+          <button
+            v-for="s in SKILLS"
+            :key="s.id"
+            class="text-left rounded-2xl bg-white border border-slate-200 p-5 hover:border-indigo-400 hover:shadow-md transition"
+            @click="startSkill(s.id)"
+          >
+            <div class="text-3xl mb-2">{{ s.emoji }}</div>
+            <h3 class="font-bold text-slate-900">{{ s.label }}</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">{{ s.desc }}</p>
+            <p class="text-[10px] uppercase tracking-wider text-indigo-500 font-bold mt-2">
+              {{ Math.min(effectiveSize(), weekItems.length) }} câu
+            </p>
+          </button>
+        </div>
       </div>
     </div>
 
