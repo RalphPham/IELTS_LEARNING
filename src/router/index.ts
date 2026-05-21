@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import('@/views/ReviewView.vue'),
     },
     {
+      path: '/week/:week',
+      name: 'weekly-review',
+      component: () => import('@/views/WeeklyReviewView.vue'),
+    },
+    {
       path: '/grammar',
       name: 'grammar-hub',
       component: () => import('@/views/GrammarHubView.vue'),

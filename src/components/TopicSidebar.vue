@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useVocabularyStore } from '@/stores/vocabulary'
+import { daysInWeek, weeksFrom, weekLabel } from '@/utils/week'
 
 const props = defineProps<{ day: string | null; topic: string | null }>()
 const emit = defineEmits<{
@@ -15,6 +16,15 @@ const countByDay = computed(() => {
   store.items.forEach((it) => (map[it.day] = (map[it.day] ?? 0) + 1))
   return map
 })
+
+// Days grouped under their week, in order
+const weekGroups = computed(() =>
+  weeksFrom(store.items).map((w) => ({
+    week: w,
+    label: weekLabel(w),
+    days: daysInWeek(store.items, w),
+  })),
+)
 
 const countByTopic = computed(() => {
   const map: Record<string, number> = {}
@@ -48,16 +58,22 @@ function selectTopic(t: string | null) {
         <span>Tất cả buổi</span>
         <span class="text-xs opacity-75">{{ store.items.length }}</span>
       </button>
-      <button
-        v-for="d in store.days"
-        :key="d"
-        class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition mb-1 flex items-center justify-between"
-        :class="props.day === d ? 'bg-indigo-600 text-white' : 'text-slate-700 hover:bg-slate-100'"
-        @click="selectDay(d)"
-      >
-        <span>{{ d }}</span>
-        <span class="text-xs opacity-75">{{ countByDay[d] }}</span>
-      </button>
+
+      <div v-for="g in weekGroups" :key="g.week" class="mt-2">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-amber-600 px-3 mb-1">
+          {{ g.label }}
+        </p>
+        <button
+          v-for="d in g.days"
+          :key="d"
+          class="w-full text-left pl-5 pr-3 py-2 rounded-lg text-sm font-medium transition mb-1 flex items-center justify-between"
+          :class="props.day === d ? 'bg-indigo-600 text-white' : 'text-slate-700 hover:bg-slate-100'"
+          @click="selectDay(d)"
+        >
+          <span>{{ d }}</span>
+          <span class="text-xs opacity-75">{{ countByDay[d] }}</span>
+        </button>
+      </div>
 
       <div class="border-t border-slate-200 mt-4 pt-3">
         <h2 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">

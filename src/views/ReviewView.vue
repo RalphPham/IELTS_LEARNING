@@ -7,6 +7,7 @@ import { applyGrade } from '@/utils/srs'
 import { speak } from '@/utils/speech'
 import MasteryStats from '@/components/MasteryStats.vue'
 import QuizCard from '@/components/QuizCard.vue'
+import { weeksFrom, weekLabel, itemsInWeek } from '@/utils/week'
 
 type Mode = 'flashcard' | 'quiz'
 type Scope = 'due' | 'all'
@@ -43,6 +44,14 @@ const dueQueue = computed(() =>
 //    (use this for on-demand re-review of a whole day's vocab)
 const sessionSourceCount = computed(() =>
   scope.value === 'due' ? dueQueue.value.length : scopedCards.value.length,
+)
+
+const weeks = computed(() =>
+  weeksFrom(store.items).map((w) => ({
+    week: w,
+    label: weekLabel(w),
+    count: itemsInWeek(store.items, w).length,
+  })),
 )
 
 const current = computed<Vocabulary | null>(() => {
@@ -271,6 +280,27 @@ function quickStart(day: string, s: Scope = 'all') {
               {{ store.items.filter((it) => it.day === d).length }} thẻ — ôn tất cả
             </div>
           </button>
+        </div>
+      </section>
+
+      <!-- Weekly review — 4 skills -->
+      <section v-if="weeks.length" class="rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 shadow-sm p-5 mb-4">
+        <h2 class="text-xs font-bold uppercase tracking-widest text-amber-700 mb-1">
+          📅 Ôn tập cuối tuần — đủ 4 kỹ năng
+        </h2>
+        <p class="text-xs text-slate-600 mb-3">
+          Nghe · Nói · Đọc · Viết — luyện lại toàn bộ từ vựng đã học trong tuần.
+        </p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <RouterLink
+            v-for="w in weeks"
+            :key="w.week"
+            :to="`/week/${w.week}`"
+            class="px-3 py-2.5 rounded-xl bg-white border border-amber-200 hover:border-amber-400 hover:shadow-sm text-left transition"
+          >
+            <div class="text-sm font-bold text-slate-900">{{ w.label }}</div>
+            <div class="text-[10px] text-slate-500 mt-0.5">{{ w.count }} từ · 4 kỹ năng</div>
+          </RouterLink>
         </div>
       </section>
 
