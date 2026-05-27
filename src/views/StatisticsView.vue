@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useVocabularyStore } from '@/stores/vocabulary'
 import { useGrammarStore } from '@/stores/grammar'
 import { useActivityStore } from '@/stores/activity'
@@ -8,10 +8,45 @@ import { TENSES } from '@/data/grammar/tenses'
 import { questionsForTense } from '@/data/grammar/questions'
 import { weeksFrom, weekLabel, itemsInWeek } from '@/utils/week'
 import { countByMastery, MASTERY_META } from '@/utils/mastery'
+import { buildBackupJson, restoreBackupJson, downloadJsonFile } from '@/utils/backup'
 
 const vocab = useVocabularyStore()
 const grammar = useGrammarStore()
 const activity = useActivityStore()
+
+const restoreMessage = ref<{ type: 'success' | 'error'; text: string } | null>(null)
+
+function exportAll() {
+  const json = buildBackupJson(vocab, grammar, activity)
+  const date = new Date().toISOString().slice(0, 10)
+  downloadJsonFile(json, `ielts-vocab-backup-${date}.json`)
+}
+
+function onRestoreFile(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  if (!confirm('Khôi phục sẽ THAY THẾ toàn bộ dữ liệu hiện tại. Tiếp tục?')) {
+    ;(e.target as HTMLInputElement).value = ''
+    return
+  }
+  const reader = new FileReader()
+  reader.onload = () => {
+    try {
+      const r = restoreBackupJson(reader.result as string, vocab, grammar, activity)
+      restoreMessage.value = {
+        type: 'success',
+        text: `✓ Khôi phục thành công: ${r.vocabCount} từ, ${r.grammarUserCount} câu hỏi tự thêm, ${r.days} ngày học.`,
+      }
+    } catch (err) {
+      restoreMessage.value = {
+        type: 'error',
+        text: 'File không hợp lệ. Vui lòng chọn file backup đã export từ app.',
+      }
+    }
+  }
+  reader.readAsText(file)
+  ;(e.target as HTMLInputElement).value = ''
+}
 
 // Heatmap of last 30 days
 const last30 = computed(() => activity.lastNDays(30))
@@ -90,9 +125,41 @@ function streakEmoji(n: number): string {
 <template>
   <div class="mx-auto max-w-3xl px-4 lg:px-8 py-6">
     <h1 class="text-2xl font-bold mb-1">📊 Thống kê</h1>
-    <p class="text-sm text-slate-500 mb-5">
+    <p class="text-sm text-slate-500 mb-4">
       Hành trình học của bạn — tất cả lưu trong trình duyệt.
     </p>
+
+    <!-- ===== Backup all ===== -->
+    <section class="rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 p-5 mb-5">
+      <h2 class="text-xs font-bold uppercase tracking-widest text-emerald-700 mb-1">
+        🛡️ Sao lưu toàn bộ
+      </h2>
+      <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+        Gộp tất cả: từ vựng + SRS, câu ngữ pháp tự thêm, tiến trình ngữ pháp, lịch học (streak)
+        — vào 1 file JSON. Lưu lên Drive/Zalo là an toàn dù máy có gì cũng khôi phục được.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <button
+          class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition"
+          @click="exportAll"
+        >
+          ⬇ Tải file backup
+        </button>
+        <label class="px-4 py-2 rounded-xl bg-white border border-emerald-300 text-emerald-700 font-bold text-sm hover:bg-emerald-50 cursor-pointer transition">
+          ⬆ Khôi phục từ file
+          <input type="file" accept="application/json" class="hidden" @change="onRestoreFile" />
+        </label>
+      </div>
+      <p
+        v-if="restoreMessage"
+        class="mt-3 text-sm rounded-lg px-3 py-2 border"
+        :class="restoreMessage.type === 'success'
+          ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+          : 'bg-rose-50 border-rose-200 text-rose-700'"
+      >
+        {{ restoreMessage.text }}
+      </p>
+    </section>
 
     <!-- ===== STREAK + Totals ===== -->
     <section class="grid sm:grid-cols-3 gap-3 mb-5">
