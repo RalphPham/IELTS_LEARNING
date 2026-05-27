@@ -166,16 +166,25 @@ function resetData() {
             :key="topicName"
             class="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden"
           >
-            <button
-              class="w-full px-4 py-3 flex items-center gap-3 bg-slate-50 hover:bg-slate-100 border-b border-slate-200 transition text-left"
-              @click="toggleGroup(topicName)"
-            >
-              <span class="text-slate-400 text-xs">{{ collapsedTopics[topicName] ? '▶' : '▼' }}</span>
-              <h3 class="font-bold text-slate-800 flex-1 truncate">{{ topicName }}</h3>
-              <span class="text-xs font-semibold text-slate-500 bg-white px-2 py-0.5 rounded-full">
-                {{ cards.length }}
-              </span>
-            </button>
+            <div class="w-full px-4 py-3 flex items-center gap-3 bg-slate-50 border-b border-slate-200">
+              <button
+                class="flex items-center gap-3 flex-1 min-w-0 text-left hover:opacity-80 transition"
+                @click="toggleGroup(topicName)"
+              >
+                <span class="text-slate-400 text-xs shrink-0">{{ collapsedTopics[topicName] ? '▶' : '▼' }}</span>
+                <h3 class="font-bold text-slate-800 flex-1 truncate">{{ topicName }}</h3>
+                <span class="text-xs font-semibold text-slate-500 bg-white px-2 py-0.5 rounded-full shrink-0">
+                  {{ cards.length }}
+                </span>
+              </button>
+              <RouterLink
+                :to="{ name: 'topic-practice', query: { t: topicName } }"
+                class="shrink-0 text-xs font-bold px-2.5 py-1 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
+                title="Luyện viết theo chủ đề"
+              >
+                ✍️ Luyện
+              </RouterLink>
+            </div>
 
             <div v-if="!collapsedTopics[topicName]">
               <!-- Compact rows -->

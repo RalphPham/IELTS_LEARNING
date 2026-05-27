@@ -29,6 +29,11 @@ const router = createRouter({
       component: () => import('@/views/WeeklyReviewView.vue'),
     },
     {
+      path: '/topic-practice',
+      name: 'topic-practice',
+      component: () => import('@/views/TopicPracticeView.vue'),
+    },
+    {
       path: '/grammar',
       name: 'grammar-hub',
       component: () => import('@/views/GrammarHubView.vue'),
