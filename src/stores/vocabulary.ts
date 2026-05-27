@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import type { ReviewGrade, Vocabulary, VocabularyInput } from '@/types/vocabulary'
 import { applyGrade, isDue, newSrsState } from '@/utils/srs'
 import { seedVocabulary } from '@/data/seed'
+import { useActivityStore } from './activity'
 
 const STORAGE_KEY = 'vocab.v2'
 
@@ -130,6 +131,7 @@ export const useVocabularyStore = defineStore('vocabulary', () => {
     const cur = items.value[idx]
     if (!cur) return
     items.value[idx] = applyGrade(cur, g)
+    useActivityStore().markStudied()
   }
 
   function getById(id: string) {

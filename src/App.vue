@@ -78,6 +78,13 @@ onMounted(() => {
             Ngữ pháp
           </RouterLink>
           <RouterLink
+            to="/stats"
+            class="rounded-full px-4 py-1.5 transition hover:bg-white hover:text-orange-700"
+            active-class="bg-white text-orange-700 shadow-sm"
+          >
+            📊
+          </RouterLink>
+          <RouterLink
             to="/add"
             class="rounded-full px-4 py-1.5 transition hover:bg-white hover:text-fuchsia-700"
             active-class="bg-white text-fuchsia-700 shadow-sm"

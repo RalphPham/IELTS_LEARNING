@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import type { GrammarProgressMap, GrammarQuestion, TenseId } from '@/types/grammar'
+import { useActivityStore } from './activity'
 
 const PROGRESS_KEY = 'grammar.v1'
 const USER_QUESTIONS_KEY = 'grammar.userQuestions.v1'
@@ -68,6 +69,7 @@ export const useGrammarStore = defineStore('grammar', () => {
     cur.totalAnswered += answeredIds.length
     cur.totalCorrect += correct
     cur.lastScore = answeredIds.length === 0 ? 0 : correct / answeredIds.length
+    if (answeredIds.length > 0) useActivityStore().markStudied()
 
     // Add new wrong IDs to the cumulative set
     const wrongSet = new Set(cur.wrongIds)

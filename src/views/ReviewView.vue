@@ -20,6 +20,8 @@ const scope = ref<Scope>('due')
 const mode = ref<Mode>('flashcard')
 const sessionActive = ref(false)
 const flipped = ref(false)
+// Reverse mode: show meaning first, recall the English word
+const reverseMode = ref(false)
 const sessionCount = ref(0)
 const sessionCorrect = ref(0)
 const initialQueueSize = ref(0)
@@ -253,6 +255,14 @@ function quickStart(day: string, s: Scope = 'all') {
               📝 Trắc nghiệm
             </button>
           </div>
+
+          <label
+            v-if="mode === 'flashcard'"
+            class="mt-2 flex items-center gap-2 cursor-pointer text-sm"
+          >
+            <input v-model="reverseMode" type="checkbox" class="rounded" />
+            <span class="opacity-90">🔁 Chiều ngược (Việt → Anh) — khó hơn, củng cố chủ động</span>
+          </label>
         </div>
 
         <button
@@ -361,15 +371,29 @@ function quickStart(day: string, s: Scope = 'all') {
           </div>
 
           <div v-if="!flipped" class="flex-1 flex flex-col items-center justify-center text-center px-6 py-10">
-            <div class="flex items-center justify-center gap-3 flex-wrap">
-              <h2 class="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">{{ current.word }}</h2>
-              <button class="text-indigo-600 text-3xl hover:scale-110 transition" @click.stop="speak(current.word)">🔊</button>
-            </div>
-            <p v-if="current.pronunciation" class="text-slate-500 font-mono mt-3 text-lg">{{ current.pronunciation }}</p>
-            <span class="mt-3 text-xs uppercase tracking-widest text-indigo-700 font-bold">
-              {{ current.partOfSpeech }}
-            </span>
-            <p class="mt-10 text-xs text-slate-400">Bấm thẻ hoặc Space để xem nghĩa</p>
+            <!-- Normal: show English word; Reverse: show Vietnamese meaning -->
+            <template v-if="!reverseMode">
+              <div class="flex items-center justify-center gap-3 flex-wrap">
+                <h2 class="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">{{ current.word }}</h2>
+                <button class="text-indigo-600 text-3xl hover:scale-110 transition" @click.stop="speak(current.word)">🔊</button>
+              </div>
+              <p v-if="current.pronunciation" class="text-slate-500 font-mono mt-3 text-lg">{{ current.pronunciation }}</p>
+              <span class="mt-3 text-xs uppercase tracking-widest text-indigo-700 font-bold">
+                {{ current.partOfSpeech }}
+              </span>
+              <p class="mt-10 text-xs text-slate-400">Bấm thẻ hoặc Space để xem nghĩa</p>
+            </template>
+            <template v-else>
+              <span class="text-[10px] uppercase tracking-widest font-bold text-rose-600 mb-3">🔁 Chiều ngược</span>
+              <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">{{ current.meaningVi }}</h2>
+              <p v-if="current.meaningEn" class="text-sm text-slate-500 mt-3 max-w-md">
+                {{ current.meaningEn }}
+              </p>
+              <span class="mt-3 text-xs uppercase tracking-widest text-indigo-700 font-bold">
+                {{ current.partOfSpeech }}
+              </span>
+              <p class="mt-10 text-xs text-slate-400">Nhớ từ tiếng Anh? Bấm thẻ hoặc Space để kiểm tra</p>
+            </template>
           </div>
 
           <div v-else class="flex-1 px-6 py-6 space-y-4">
