@@ -53,9 +53,26 @@ function isLearned(text: string): boolean {
   return vocabSet.value.has(text.toLowerCase().replace(/[^a-z0-9']/gi, ''))
 }
 
-function start() {
-  // Always clean first so pasted YouTube transcripts (with timestamps) work directly
-  const ss = splitSentences(cleanTranscript(rawTranscript.value))
+// All sentences from the cleaned transcript
+const allSentences = computed(() => splitSentences(cleanTranscript(rawTranscript.value)))
+
+// Auto-split long transcripts into manageable parts
+const chunkSize = ref(8)
+const chunks = computed(() => {
+  const all = allSentences.value
+  const out: { index: number; from: number; to: number; sentences: string[] }[] = []
+  for (let i = 0; i < all.length; i += chunkSize.value) {
+    out.push({
+      index: out.length,
+      from: i + 1,
+      to: Math.min(i + chunkSize.value, all.length),
+      sentences: all.slice(i, i + chunkSize.value),
+    })
+  }
+  return out
+})
+
+function startWith(ss: string[]) {
   if (ss.length === 0) return
   sentences.value = ss
   index.value = 0
@@ -64,6 +81,10 @@ function start() {
   accuracies.value = []
   allMissed.value = []
   resetSentence()
+}
+
+function start() {
+  startWith(allSentences.value)
 }
 
 function resetSentence() {
@@ -153,7 +174,7 @@ const sessionAccuracy = computed(() =>
           :disabled="!rawTranscript.trim()"
           @click="start"
         >
-          Bắt đầu ({{ splitSentences(cleanTranscript(rawTranscript)).length }} câu)
+          Làm tất cả ({{ allSentences.length }} câu)
         </button>
         <button
           class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 disabled:opacity-50"
@@ -165,8 +186,41 @@ const sessionAccuracy = computed(() =>
         </button>
       </div>
       <p class="text-[11px] text-slate-400 mt-2">
-        Paste thẳng transcript YouTube cũng được — app tự bỏ timestamp khi bắt đầu. Bấm 🧹 nếu muốn xem bản đã dọn trước.
+        Paste thẳng transcript YouTube cũng được — app tự bỏ timestamp.
       </p>
+
+      <!-- Auto chunking for long transcripts -->
+      <div v-if="allSentences.length > chunkSize" class="rounded-2xl bg-amber-50 border border-amber-200 p-4 mt-4">
+        <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+          <h2 class="text-xs font-bold uppercase tracking-widest text-amber-700">
+            📑 Bài dài — chia thành {{ chunks.length }} phần
+          </h2>
+          <div class="flex items-center gap-1 text-xs">
+            <span class="text-slate-500">Câu/phần:</span>
+            <button
+              v-for="s in [5, 8, 10, 15]"
+              :key="s"
+              class="px-2 py-1 rounded-md font-bold transition"
+              :class="chunkSize === s ? 'bg-amber-500 text-white' : 'bg-white border border-amber-200 text-slate-600'"
+              @click="chunkSize = s"
+            >
+              {{ s }}
+            </button>
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-500 mb-3">Mỗi buổi chỉ cần làm 1 phần ngắn. Chọn phần để bắt đầu:</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <button
+            v-for="c in chunks"
+            :key="c.index"
+            class="px-3 py-2.5 rounded-xl bg-white border border-amber-200 hover:border-amber-400 hover:shadow-sm text-left transition"
+            @click="startWith(c.sentences)"
+          >
+            <div class="text-sm font-bold text-slate-900">Phần {{ c.index + 1 }}</div>
+            <div class="text-[10px] text-slate-500 mt-0.5">câu {{ c.from }}–{{ c.to }}</div>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- ===== FINISHED ===== -->
