@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { TENSES } from '@/data/grammar/tenses'
 import { QUESTIONS, questionsForTense } from '@/data/grammar/questions'
+import { SPECIAL_TOPICS } from '@/data/grammar/specialTopics'
 import { useGrammarStore } from '@/stores/grammar'
 import type { TenseGroup } from '@/types/grammar'
 
@@ -27,10 +28,14 @@ function stats(tenseId: string) {
   return { progress: p, count: seedCount + userCount, userCount }
 }
 
-const sequencingCount = computed(
-  () =>
-    questionsForTense('sequencing').length +
-    store.userQuestions.filter((q) => q.tenseId === 'sequencing').length,
+const specialTopics = computed(() =>
+  SPECIAL_TOPICS.map((t) => ({
+    ...t,
+    count:
+      questionsForTense(t.id).length +
+      store.userQuestions.filter((q) => q.tenseId === t.id).length,
+    progress: store.getForTense(t.id as never),
+  })),
 )
 
 function formatPct(n: number): string {
@@ -66,24 +71,45 @@ function formatPct(n: number): string {
       </div>
     </div>
 
-    <!-- Featured: Sự phối thì -->
-    <RouterLink
-      to="/grammar/sequencing"
-      class="block rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-4 mb-6 hover:shadow-md transition"
-    >
-      <div class="flex items-center gap-3">
-        <div class="text-3xl">🔗</div>
-        <div class="flex-1 min-w-0">
-          <h3 class="font-bold text-slate-900">Sự phối thì</h3>
-          <p class="text-xs text-slate-600 mt-0.5">
-            Cách chia động từ theo liên từ thời gian (when, while, as soon as, since, by the time…)
-          </p>
-        </div>
-        <span class="text-[10px] uppercase tracking-wider font-bold text-amber-700 shrink-0">
-          {{ sequencingCount }} câu →
-        </span>
+    <!-- Featured: special rule-based topics -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="h-1.5 w-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500"></div>
+        <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500">Chủ đề chuyên sâu</h2>
       </div>
-    </RouterLink>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <RouterLink
+          v-for="t in specialTopics"
+          :key="t.id"
+          :to="`/grammar/topic/${t.id}`"
+          class="block rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-4 hover:shadow-md transition"
+        >
+          <div class="flex items-start gap-3">
+            <div class="text-2xl">{{ t.emoji }}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="font-bold text-slate-900">{{ t.nameVi }}</h3>
+                <span
+                  v-if="t.progress"
+                  class="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0"
+                  :class="t.progress.lastScore >= 0.8
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    : t.progress.lastScore >= 0.5
+                      ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                      : 'bg-rose-50 text-rose-700 border border-rose-200'"
+                >
+                  {{ formatPct(t.progress.lastScore) }}
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-600 mt-0.5">{{ t.name }}</p>
+              <p class="text-[10px] text-amber-700 font-bold uppercase tracking-wider mt-2">
+                {{ t.count }} câu →
+              </p>
+            </div>
+          </div>
+        </RouterLink>
+      </div>
+    </div>
 
     <div v-for="group in tensesByGroup" :key="group.id" class="mb-6">
       <div class="flex items-center gap-2 mb-3">

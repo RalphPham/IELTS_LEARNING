@@ -56,10 +56,24 @@ const router = createRouter({
       props: { id: 'mixed' },
     },
     {
-      // Special topic: tense coordination — must come before /grammar/:id
+      // Generic special-topic detail (sequencing, future_forms, have_got, used_to, pp_vs_past)
+      path: '/grammar/topic/:topicId',
+      name: 'grammar-topic',
+      component: () => import('@/views/GrammarTopicView.vue'),
+    },
+    {
+      path: '/grammar/topic/:topicId/practice',
+      name: 'grammar-topic-practice',
+      component: () => import('@/views/GrammarPracticeView.vue'),
+    },
+    {
+      // Back-compat: old sequencing URLs redirect into the generic topic routes
       path: '/grammar/sequencing',
-      name: 'grammar-sequencing',
-      component: () => import('@/views/GrammarSequencingView.vue'),
+      redirect: '/grammar/topic/sequencing',
+    },
+    {
+      path: '/grammar/sequencing/practice',
+      redirect: '/grammar/topic/sequencing/practice',
     },
     {
       path: '/grammar/:id',

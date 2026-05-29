@@ -11,8 +11,12 @@ export type TenseId =
   | 'future_continuous'
   | 'future_perfect'
   | 'future_perfect_continuous'
-  // Special topic: tense coordination with time conjunctions
+  // Special topics (rule-based, not one of the 12 tenses)
   | 'sequencing'
+  | 'future_forms'
+  | 'have_got'
+  | 'used_to'
+  | 'pp_vs_past'
 
 export type TenseGroup = 'present' | 'past' | 'future'
 

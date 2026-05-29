@@ -1,6 +1,7 @@
 import type { GrammarQuestion } from '@/types/grammar'
 import { SEQUENCING_QUESTIONS } from './sequencingQuestions'
 import { ADDITIONAL_QUESTIONS } from './additionalQuestions'
+import { SPECIAL_TOPIC_QUESTIONS } from './specialTopicQuestions'
 
 // Question bank — written in everyday contexts (work, apps, family, travel...)
 // Aim: cover the main usages of each tense with both MCQ and fill-in styles.
@@ -1467,6 +1468,7 @@ export const QUESTIONS: GrammarQuestion[] = [
   ...BASE_QUESTIONS,
   ...ADDITIONAL_QUESTIONS,
   ...SEQUENCING_QUESTIONS,
+  ...SPECIAL_TOPIC_QUESTIONS,
 ]
 
 export function questionsForTense(tenseId: string): GrammarQuestion[] {

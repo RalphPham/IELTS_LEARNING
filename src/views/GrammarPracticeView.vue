@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { findTense } from '@/data/grammar/tenses'
 import { QUESTIONS, questionsForTense } from '@/data/grammar/questions'
+import { findSpecialTopic, specialTopicName } from '@/data/grammar/specialTopics'
 import { useGrammarStore } from '@/stores/grammar'
 import type { GrammarQuestion, TenseId } from '@/types/grammar'
 
@@ -16,11 +17,14 @@ const store = useGrammarStore()
 
 // /grammar/mixed has no :id param. Detect it via the route name.
 const isMixed = computed(() => route.name === 'grammar-mixed')
-const tenseIdParam = computed(() => (route.params.id as string) ?? '')
-const isSequencing = computed(() => tenseIdParam.value === 'sequencing')
+// Param may come from /grammar/:id/practice or /grammar/topic/:topicId/practice
+const tenseIdParam = computed(
+  () => ((route.params.topicId as string) || (route.params.id as string)) ?? '',
+)
+const isSpecialTopic = computed(() => findSpecialTopic(tenseIdParam.value) !== null)
 const tense = computed(() => (isMixed.value ? null : findTense(tenseIdParam.value) ?? null))
-// The topic id used for filtering / progress — a tense id or 'sequencing'
-const topicId = computed<string>(() => tense.value?.id ?? (isSequencing.value ? 'sequencing' : ''))
+// The topic id used for filtering / progress — a tense id or a special topic id
+const topicId = computed<string>(() => (isMixed.value ? '' : tenseIdParam.value))
 const onlyWrong = computed(() => route.query.wrong === '1')
 
 function shuffle<T>(arr: T[]): T[] {
@@ -112,7 +116,7 @@ function restart() {
 
 function back() {
   if (isMixed.value) router.push('/grammar')
-  else if (isSequencing.value) router.push('/grammar/sequencing')
+  else if (isSpecialTopic.value) router.push(`/grammar/topic/${topicId.value}`)
   else router.push(`/grammar/${tense.value?.id ?? ''}`)
 }
 
@@ -204,7 +208,7 @@ const accuracy = computed(() => {
 
       <div class="rounded-3xl bg-white border border-slate-200 shadow-lg p-6">
         <div class="flex items-center justify-between text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-3">
-          <span>{{ findTense(current.tenseId)?.nameVi ?? (current.tenseId === 'sequencing' ? 'Sự phối thì' : 'Mixed') }}</span>
+          <span>{{ findTense(current.tenseId)?.nameVi ?? specialTopicName(current.tenseId) ?? 'Mixed' }}</span>
           <span>{{ current.type === 'mcq' ? 'Trắc nghiệm' : 'Điền vào chỗ trống' }}</span>
         </div>
 
