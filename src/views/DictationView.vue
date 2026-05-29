@@ -12,6 +12,22 @@ const vocab = useVocabularyStore()
 
 const rawTranscript = ref('')
 const sentences = ref<string[]>([])
+
+// Clean a pasted YouTube transcript: strip timestamps (0:08, 1:07:09),
+// drop lines that are only a timestamp, and collapse into clean prose.
+function cleanTranscript(raw: string): string {
+  return raw
+    .split('\n')
+    .map((line) => line.replace(/\b\d{1,2}:\d{2}(:\d{2})?\b/g, '').trim())
+    .filter((line) => line.length > 0)
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function cleanInPlace() {
+  rawTranscript.value = cleanTranscript(rawTranscript.value)
+}
 const index = ref(0)
 const started = ref(false)
 const finished = ref(false)
@@ -38,7 +54,8 @@ function isLearned(text: string): boolean {
 }
 
 function start() {
-  const ss = splitSentences(rawTranscript.value)
+  // Always clean first so pasted YouTube transcripts (with timestamps) work directly
+  const ss = splitSentences(cleanTranscript(rawTranscript.value))
   if (ss.length === 0) return
   sentences.value = ss
   index.value = 0
@@ -127,16 +144,29 @@ const sessionAccuracy = computed(() =>
       <textarea
         v-model="rawTranscript"
         rows="8"
-        placeholder="Dán transcript vào đây..."
+        placeholder="Dán transcript vào đây (kể cả bản YouTube có timestamp 0:08, 1:07...)"
         class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:border-indigo-500 focus:outline-none text-sm mb-3"
       ></textarea>
-      <button
-        class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 disabled:opacity-50"
-        :disabled="!rawTranscript.trim()"
-        @click="start"
-      >
-        Bắt đầu ({{ splitSentences(rawTranscript).length }} câu)
-      </button>
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 disabled:opacity-50"
+          :disabled="!rawTranscript.trim()"
+          @click="start"
+        >
+          Bắt đầu ({{ splitSentences(cleanTranscript(rawTranscript)).length }} câu)
+        </button>
+        <button
+          class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 disabled:opacity-50"
+          :disabled="!rawTranscript.trim()"
+          @click="cleanInPlace"
+          title="Bỏ timestamp 0:08, 1:07... và gộp lại"
+        >
+          🧹 Dọn timestamp
+        </button>
+      </div>
+      <p class="text-[11px] text-slate-400 mt-2">
+        Paste thẳng transcript YouTube cũng được — app tự bỏ timestamp khi bắt đầu. Bấm 🧹 nếu muốn xem bản đã dọn trước.
+      </p>
     </div>
 
     <!-- ===== FINISHED ===== -->
