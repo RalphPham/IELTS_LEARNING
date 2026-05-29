@@ -39,6 +39,21 @@ const router = createRouter({
       component: () => import('@/views/StatisticsView.vue'),
     },
     {
+      path: '/skills',
+      name: 'skills-hub',
+      component: () => import('@/views/SkillsHubView.vue'),
+    },
+    {
+      path: '/skills/dictation',
+      name: 'skills-dictation',
+      component: () => import('@/views/DictationView.vue'),
+    },
+    {
+      path: '/skills/speaking',
+      name: 'skills-speaking',
+      component: () => import('@/views/SpeakingView.vue'),
+    },
+    {
       path: '/grammar',
       name: 'grammar-hub',
       component: () => import('@/views/GrammarHubView.vue'),

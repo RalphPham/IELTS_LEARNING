@@ -1,20 +1,13 @@
 import type { useVocabularyStore } from '@/stores/vocabulary'
 import type { useGrammarStore } from '@/stores/grammar'
 import type { useActivityStore } from '@/stores/activity'
-
-interface FullBackup {
-  version: 1
-  exportedAt: string
-  vocab: ReturnType<ReturnType<typeof useVocabularyStore>['$state']['items']['valueOf']> | unknown
-  grammarProgress: unknown
-  grammarUserQuestions: unknown
-  activity: { studyDates: string[] }
-}
+import type { useSkillsStore } from '@/stores/skills'
 
 export function buildBackupJson(
   vocab: ReturnType<typeof useVocabularyStore>,
   grammar: ReturnType<typeof useGrammarStore>,
   activity: ReturnType<typeof useActivityStore>,
+  skills?: ReturnType<typeof useSkillsStore>,
 ): string {
   const payload = {
     version: 1 as const,
@@ -23,6 +16,7 @@ export function buildBackupJson(
     grammarProgress: grammar.progress,
     grammarUserQuestions: grammar.userQuestions,
     activity: { studyDates: activity.studyDates },
+    skills: skills ? skills.data : undefined,
   }
   return JSON.stringify(payload, null, 2)
 }
@@ -32,12 +26,14 @@ export function restoreBackupJson(
   vocab: ReturnType<typeof useVocabularyStore>,
   grammar: ReturnType<typeof useGrammarStore>,
   activity: ReturnType<typeof useActivityStore>,
+  skills?: ReturnType<typeof useSkillsStore>,
 ): { vocabCount: number; grammarUserCount: number; days: number } {
-  const data = JSON.parse(json) as Partial<FullBackup> & {
+  const data = JSON.parse(json) as {
     vocab?: unknown[]
     grammarProgress?: Record<string, unknown>
     grammarUserQuestions?: unknown[]
     activity?: { studyDates?: string[] }
+    skills?: { dictation?: unknown[]; speaking?: unknown[]; missedWords?: Record<string, number> }
   }
 
   if (!data || typeof data !== 'object') throw new Error('Định dạng không hợp lệ')
@@ -46,7 +42,6 @@ export function restoreBackupJson(
     vocab.importJson(JSON.stringify(data.vocab))
   }
   if (data.grammarProgress && typeof data.grammarProgress === 'object') {
-    // Reset and re-populate
     grammar.reset()
     Object.assign(grammar.progress, data.grammarProgress)
   }
@@ -59,6 +54,14 @@ export function restoreBackupJson(
       if (!activity.data.studyDates.includes(d)) activity.data.studyDates.push(d)
     })
     activity.data.studyDates.sort()
+  }
+  if (skills && data.skills && typeof data.skills === 'object') {
+    skills.reset()
+    if (Array.isArray(data.skills.dictation)) skills.data.dictation = data.skills.dictation as never
+    if (Array.isArray(data.skills.speaking)) skills.data.speaking = data.skills.speaking as never
+    if (data.skills.missedWords && typeof data.skills.missedWords === 'object') {
+      skills.data.missedWords = data.skills.missedWords
+    }
   }
 
   return {

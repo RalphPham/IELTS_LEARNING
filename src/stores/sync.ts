@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useVocabularyStore } from './vocabulary'
 import { useGrammarStore } from './grammar'
 import { useActivityStore } from './activity'
+import { useSkillsStore } from './skills'
 import { buildBackupJson, restoreBackupJson } from '@/utils/backup'
 
 const STORAGE_KEY = 'sync.v1'
@@ -77,15 +78,17 @@ export const useSyncStore = defineStore('sync', () => {
     const vocab = useVocabularyStore()
     const grammar = useGrammarStore()
     const activity = useActivityStore()
-    return buildBackupJson(vocab, grammar, activity)
+    const skills = useSkillsStore()
+    return buildBackupJson(vocab, grammar, activity, skills)
   }
 
   function applySnapshot(json: string) {
     const vocab = useVocabularyStore()
     const grammar = useGrammarStore()
     const activity = useActivityStore()
+    const skills = useSkillsStore()
     applyingRemote = true
-    restoreBackupJson(json, vocab, grammar, activity)
+    restoreBackupJson(json, vocab, grammar, activity, skills)
     // Settle then update hash and unlock
     setTimeout(() => {
       lastPushedHash = simpleHash(getLocalSnapshot())

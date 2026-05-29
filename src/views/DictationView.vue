@@ -1,0 +1,262 @@
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { wordDiff, diffAccuracy, splitSentences, type DiffToken } from '@/utils/diff'
+import { speak } from '@/utils/speech'
+import { useSkillsStore } from '@/stores/skills'
+import { useVocabularyStore } from '@/stores/vocabulary'
+
+const router = useRouter()
+const skills = useSkillsStore()
+const vocab = useVocabularyStore()
+
+const rawTranscript = ref('')
+const sentences = ref<string[]>([])
+const index = ref(0)
+const started = ref(false)
+const finished = ref(false)
+
+const userText = ref('')
+const checked = ref(false)
+const speed = ref(1)
+
+// per-session accumulation
+const accuracies = ref<number[]>([])
+const allMissed = ref<string[]>([])
+
+const current = computed(() => sentences.value[index.value] ?? '')
+const total = computed(() => sentences.value.length)
+
+const tokens = computed<DiffToken[]>(() =>
+  checked.value ? wordDiff(current.value, userText.value) : [],
+)
+const accuracy = computed(() => (checked.value ? diffAccuracy(tokens.value) : 0))
+
+const vocabSet = computed(() => new Set(vocab.items.map((it) => it.word.toLowerCase())))
+function isLearned(text: string): boolean {
+  return vocabSet.value.has(text.toLowerCase().replace(/[^a-z0-9']/gi, ''))
+}
+
+function start() {
+  const ss = splitSentences(rawTranscript.value)
+  if (ss.length === 0) return
+  sentences.value = ss
+  index.value = 0
+  started.value = true
+  finished.value = false
+  accuracies.value = []
+  allMissed.value = []
+  resetSentence()
+}
+
+function resetSentence() {
+  userText.value = ''
+  checked.value = false
+}
+
+function playCurrent() {
+  // Web Speech rate: clamp 0.1..10; we use 0.5/0.75/1
+  speakAtRate(current.value, speed.value)
+}
+
+function speakAtRate(text: string, rate: number) {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
+  const synth = window.speechSynthesis
+  synth.cancel()
+  const u = new SpeechSynthesisUtterance(text)
+  u.rate = rate
+  synth.speak(u)
+}
+
+function check() {
+  if (checked.value) return
+  checked.value = true
+  accuracies.value.push(accuracy.value)
+  tokens.value.filter((t) => t.type === 'missing').forEach((t) => {
+    const w = t.text.toLowerCase().replace(/[^a-z0-9']/gi, '')
+    if (w) allMissed.value.push(w)
+  })
+}
+
+function next() {
+  if (!checked.value) return
+  if (index.value + 1 >= total.value) {
+    finish()
+    return
+  }
+  index.value++
+  resetSentence()
+}
+
+function finish() {
+  const avg =
+    accuracies.value.length === 0
+      ? 0
+      : accuracies.value.reduce((a, b) => a + b, 0) / accuracies.value.length
+  skills.recordDictation(avg, total.value, allMissed.value)
+  finished.value = true
+}
+
+function restart() {
+  started.value = false
+  finished.value = false
+  sentences.value = []
+}
+
+const sessionAccuracy = computed(() =>
+  accuracies.value.length === 0
+    ? 0
+    : Math.round((accuracies.value.reduce((a, b) => a + b, 0) / accuracies.value.length) * 100),
+)
+</script>
+
+<template>
+  <div class="mx-auto max-w-2xl px-4 lg:px-8 py-6">
+    <button class="text-sm text-slate-500 hover:text-indigo-700 mb-3" @click="router.push('/skills')">
+      ← Về Luyện kỹ năng
+    </button>
+    <h1 class="text-2xl font-bold mb-1">🎧 Dictation Studio</h1>
+
+    <!-- ===== SETUP ===== -->
+    <div v-if="!started">
+      <p class="text-sm text-slate-600 mb-4 leading-relaxed">
+        Dán transcript chuẩn (vd lời thoại phút 9 của video). App tách thành từng câu —
+        bạn nghe (YouTube thật hoặc nút 🔊), gõ lại, rồi app <b>bôi đỏ những từ bị sót</b>
+        (thường là âm nối, mạo từ, đuôi -ed bị nuốt).
+      </p>
+      <textarea
+        v-model="rawTranscript"
+        rows="8"
+        placeholder="Dán transcript vào đây..."
+        class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:border-indigo-500 focus:outline-none text-sm mb-3"
+      ></textarea>
+      <button
+        class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 disabled:opacity-50"
+        :disabled="!rawTranscript.trim()"
+        @click="start"
+      >
+        Bắt đầu ({{ splitSentences(rawTranscript).length }} câu)
+      </button>
+    </div>
+
+    <!-- ===== FINISHED ===== -->
+    <div v-else-if="finished" class="rounded-3xl bg-white border border-slate-200 p-8 text-center shadow-sm">
+      <div class="text-5xl mb-3">{{ sessionAccuracy >= 90 ? '🏆' : sessionAccuracy >= 70 ? '👍' : '💪' }}</div>
+      <p class="text-2xl font-bold text-slate-900">{{ sessionAccuracy }}% chính xác</p>
+      <p class="text-sm text-slate-500 mt-1">{{ total }} câu đã chép</p>
+
+      <div v-if="skills.topMissedWords.length" class="mt-6 text-left">
+        <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Âm/từ bạn hay sót</p>
+        <div class="flex flex-wrap gap-1.5">
+          <span
+            v-for="m in skills.topMissedWords"
+            :key="m.word"
+            class="text-xs px-2 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200"
+          >
+            {{ m.word }} <span class="opacity-60">×{{ m.count }}</span>
+          </span>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-2">Đây là pattern lỗi nghe — chú ý mấy từ này lần sau.</p>
+      </div>
+
+      <div class="flex flex-wrap gap-2 justify-center mt-6">
+        <button class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700" @click="restart">
+          Bài mới
+        </button>
+        <button class="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200" @click="router.push('/skills')">
+          Xong
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== ACTIVE ===== -->
+    <div v-else>
+      <div class="flex items-center justify-between mb-3 text-xs text-slate-600">
+        <button class="text-slate-500 hover:text-rose-600 font-medium" @click="restart">← Thoát</button>
+        <span>Câu {{ index + 1 }}/{{ total }}</span>
+      </div>
+      <div class="h-1.5 bg-slate-200 rounded-full overflow-hidden mb-5">
+        <div class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 transition-all" :style="{ width: ((index) / total) * 100 + '%' }"></div>
+      </div>
+
+      <div class="rounded-3xl bg-white border border-slate-200 shadow-lg p-6">
+        <!-- Playback controls -->
+        <div class="flex items-center gap-2 mb-4 flex-wrap">
+          <button class="px-4 py-2.5 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700" @click="playCurrent">
+            🔊 Nghe (TTS)
+          </button>
+          <div class="flex rounded-lg bg-slate-100 p-0.5 text-xs font-bold">
+            <button
+              v-for="s in [1, 0.75, 0.5]"
+              :key="s"
+              class="px-2.5 py-1.5 rounded-md transition"
+              :class="speed === s ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600'"
+              @click="speed = s"
+            >
+              {{ s }}×
+            </button>
+          </div>
+          <span class="text-[11px] text-slate-400">hoặc nghe trên YouTube rồi gõ ↓</span>
+        </div>
+
+        <textarea
+          v-model="userText"
+          rows="3"
+          :disabled="checked"
+          placeholder="Gõ lại những gì bạn nghe được..."
+          class="w-full px-3 py-2 rounded-xl border-2 border-slate-200 focus:border-indigo-400 focus:outline-none mb-3"
+          @keydown.enter.prevent="checked ? next() : check()"
+        ></textarea>
+
+        <!-- Feedback -->
+        <div v-if="checked" class="mb-3">
+          <div class="flex items-center gap-2 mb-2">
+            <span
+              class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+              :class="accuracy >= 0.9 ? 'bg-emerald-100 text-emerald-700' : accuracy >= 0.6 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'"
+            >
+              {{ Math.round(accuracy * 100) }}% đúng
+            </span>
+            <button class="text-xs text-indigo-600 hover:underline" @click="speakAtRate(current, 0.5)">
+              🔉 Nghe lại thật chậm
+            </button>
+          </div>
+          <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-1">Bản chuẩn (đỏ = bạn sót)</p>
+          <p class="leading-relaxed">
+            <template v-for="(t, i) in tokens" :key="i">
+              <span
+                v-if="t.type !== 'extra'"
+                :class="[
+                  t.type === 'match' ? 'text-emerald-700' : 'text-rose-600 font-bold underline',
+                  isLearned(t.text) ? 'bg-amber-100 rounded px-0.5' : '',
+                ]"
+              >{{ t.text }} </span>
+            </template>
+          </p>
+          <p v-if="tokens.some((t) => t.type === 'extra')" class="text-xs text-amber-600 mt-2">
+            Từ bạn gõ thừa/sai:
+            <span v-for="(t, i) in tokens.filter((x) => x.type === 'extra')" :key="i" class="font-mono">{{ t.text }} </span>
+          </p>
+        </div>
+
+        <div class="flex gap-2">
+          <button
+            v-if="!checked"
+            class="flex-1 px-5 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 disabled:opacity-50"
+            :disabled="!userText.trim()"
+            @click="check"
+          >
+            Kiểm tra
+          </button>
+          <button
+            v-else
+            class="flex-1 px-5 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700"
+            @click="next"
+          >
+            {{ index + 1 >= total ? 'Xem kết quả' : 'Câu tiếp →' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

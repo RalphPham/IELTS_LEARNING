@@ -10,11 +10,13 @@ import { weeksFrom, weekLabel, itemsInWeek } from '@/utils/week'
 import { countByMastery, MASTERY_META } from '@/utils/mastery'
 import { buildBackupJson, restoreBackupJson, downloadJsonFile } from '@/utils/backup'
 import { useSyncStore } from '@/stores/sync'
+import { useSkillsStore } from '@/stores/skills'
 
 const vocab = useVocabularyStore()
 const grammar = useGrammarStore()
 const activity = useActivityStore()
 const sync = useSyncStore()
+const skills = useSkillsStore()
 
 // ===== Sync UI state =====
 const tokenInput = ref('')
@@ -67,7 +69,7 @@ const PAT_URL = 'https://github.com/settings/tokens/new?description=IELTS%20Voca
 const restoreMessage = ref<{ type: 'success' | 'error'; text: string } | null>(null)
 
 function exportAll() {
-  const json = buildBackupJson(vocab, grammar, activity)
+  const json = buildBackupJson(vocab, grammar, activity, skills)
   const date = new Date().toISOString().slice(0, 10)
   downloadJsonFile(json, `ielts-vocab-backup-${date}.json`)
 }
@@ -82,7 +84,7 @@ function onRestoreFile(e: Event) {
   const reader = new FileReader()
   reader.onload = () => {
     try {
-      const r = restoreBackupJson(reader.result as string, vocab, grammar, activity)
+      const r = restoreBackupJson(reader.result as string, vocab, grammar, activity, skills)
       restoreMessage.value = {
         type: 'success',
         text: `✓ Khôi phục thành công: ${r.vocabCount} từ, ${r.grammarUserCount} câu hỏi tự thêm, ${r.days} ngày học.`,
