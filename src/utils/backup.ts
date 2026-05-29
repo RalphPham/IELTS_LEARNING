@@ -33,7 +33,12 @@ export function restoreBackupJson(
     grammarProgress?: Record<string, unknown>
     grammarUserQuestions?: unknown[]
     activity?: { studyDates?: string[] }
-    skills?: { dictation?: unknown[]; speaking?: unknown[]; missedWords?: Record<string, number> }
+    skills?: {
+      dictation?: unknown[]
+      speaking?: unknown[]
+      missedWords?: Record<string, number>
+      scripts?: unknown[]
+    }
   }
 
   if (!data || typeof data !== 'object') throw new Error('Định dạng không hợp lệ')
@@ -62,6 +67,7 @@ export function restoreBackupJson(
     if (data.skills.missedWords && typeof data.skills.missedWords === 'object') {
       skills.data.missedWords = data.skills.missedWords
     }
+    if (Array.isArray(data.skills.scripts)) skills.data.scripts = data.skills.scripts as never
   }
 
   return {

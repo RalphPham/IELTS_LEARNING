@@ -56,6 +56,32 @@ function isLearned(text: string): boolean {
 // All sentences from the cleaned transcript
 const allSentences = computed(() => splitSentences(cleanTranscript(rawTranscript.value)))
 
+// Track which saved script (if any) and which part this session belongs to
+const currentScriptId = ref<string | null>(null)
+const activeChunkIndex = ref<number | null>(null)
+
+const currentScript = computed(() =>
+  currentScriptId.value ? skills.getScript(currentScriptId.value) : null,
+)
+const completedChunks = computed<number[]>(() => currentScript.value?.completedChunks ?? [])
+
+function saveCurrent() {
+  const cleaned = cleanTranscript(rawTranscript.value)
+  if (!cleaned) return
+  const firstWords = cleaned.split(/\s+/).slice(0, 6).join(' ')
+  const title = window.prompt('Đặt tên cho bài này:', firstWords) ?? firstWords
+  const id = skills.addScript(title, cleaned, chunkSize.value)
+  currentScriptId.value = id
+}
+
+function loadScript(id: string) {
+  const s = skills.getScript(id)
+  if (!s) return
+  rawTranscript.value = s.text
+  chunkSize.value = s.chunkSize
+  currentScriptId.value = s.id
+}
+
 // Auto-split long transcripts into manageable parts
 const chunkSize = ref(8)
 const chunks = computed(() => {
@@ -72,8 +98,9 @@ const chunks = computed(() => {
   return out
 })
 
-function startWith(ss: string[]) {
+function startWith(ss: string[], chunkIndex: number | null = null) {
   if (ss.length === 0) return
+  activeChunkIndex.value = chunkIndex
   sentences.value = ss
   index.value = 0
   started.value = true
@@ -84,7 +111,7 @@ function startWith(ss: string[]) {
 }
 
 function start() {
-  startWith(allSentences.value)
+  startWith(allSentences.value, null)
 }
 
 function resetSentence() {
@@ -132,6 +159,10 @@ function finish() {
       ? 0
       : accuracies.value.reduce((a, b) => a + b, 0) / accuracies.value.length
   skills.recordDictation(avg, total.value, allMissed.value)
+  // Mark this part complete if it came from a saved script
+  if (currentScriptId.value && activeChunkIndex.value !== null) {
+    skills.markChunkDone(currentScriptId.value, activeChunkIndex.value)
+  }
   finished.value = true
 }
 
@@ -184,10 +215,42 @@ const sessionAccuracy = computed(() =>
         >
           🧹 Dọn timestamp
         </button>
+        <button
+          v-if="!currentScriptId"
+          class="px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700 disabled:opacity-50"
+          :disabled="!rawTranscript.trim()"
+          @click="saveCurrent"
+        >
+          💾 Lưu bài này
+        </button>
+        <span v-else class="text-xs text-emerald-700 font-semibold self-center">✓ Đã lưu trong thư viện</span>
       </div>
       <p class="text-[11px] text-slate-400 mt-2">
-        Paste thẳng transcript YouTube cũng được — app tự bỏ timestamp.
+        Paste thẳng transcript YouTube cũng được — app tự bỏ timestamp. Bấm <b>💾 Lưu bài này</b> để mai mở lại làm tiếp.
       </p>
+
+      <!-- Saved transcript library -->
+      <div v-if="skills.scripts.length" class="rounded-2xl bg-white border border-slate-200 p-4 mt-4">
+        <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">📚 Bài đã lưu</h2>
+        <div class="space-y-2">
+          <div
+            v-for="s in skills.scripts"
+            :key="s.id"
+            class="flex items-center gap-3 px-3 py-2 rounded-lg border transition"
+            :class="currentScriptId === s.id ? 'border-indigo-400 bg-indigo-50' : 'border-slate-200 hover:bg-slate-50'"
+          >
+            <button class="flex-1 min-w-0 text-left" @click="loadScript(s.id)">
+              <div class="text-sm font-semibold text-slate-800 truncate">{{ s.title }}</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">
+                {{ s.completedChunks.length }} phần đã xong
+              </div>
+            </button>
+            <button class="text-xs text-rose-600 hover:underline shrink-0" @click="skills.removeScript(s.id)">
+              Xóa
+            </button>
+          </div>
+        </div>
+      </div>
 
       <!-- Auto chunking for long transcripts -->
       <div v-if="allSentences.length > chunkSize" class="rounded-2xl bg-amber-50 border border-amber-200 p-4 mt-4">
@@ -213,13 +276,22 @@ const sessionAccuracy = computed(() =>
           <button
             v-for="c in chunks"
             :key="c.index"
-            class="px-3 py-2.5 rounded-xl bg-white border border-amber-200 hover:border-amber-400 hover:shadow-sm text-left transition"
-            @click="startWith(c.sentences)"
+            class="px-3 py-2.5 rounded-xl border text-left transition"
+            :class="completedChunks.includes(c.index)
+              ? 'bg-emerald-50 border-emerald-300 hover:border-emerald-400'
+              : 'bg-white border-amber-200 hover:border-amber-400 hover:shadow-sm'"
+            @click="startWith(c.sentences, c.index)"
           >
-            <div class="text-sm font-bold text-slate-900">Phần {{ c.index + 1 }}</div>
+            <div class="text-sm font-bold text-slate-900 flex items-center gap-1">
+              <span v-if="completedChunks.includes(c.index)" class="text-emerald-600">✓</span>
+              Phần {{ c.index + 1 }}
+            </div>
             <div class="text-[10px] text-slate-500 mt-0.5">câu {{ c.from }}–{{ c.to }}</div>
           </button>
         </div>
+        <p v-if="currentScript" class="text-[11px] text-emerald-700 mt-2">
+          ✓ = phần đã học xong. Mở lại "{{ currentScript.title }}" bất cứ lúc nào để làm tiếp.
+        </p>
       </div>
     </div>
 

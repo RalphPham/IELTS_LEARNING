@@ -18,26 +18,42 @@ export interface SpeakingRecord {
   target: number
 }
 
+export interface SavedScript {
+  id: string
+  title: string
+  text: string
+  chunkSize: number
+  completedChunks: number[]
+  createdAt: string
+}
+
 interface SkillsData {
   dictation: DictationRecord[]
   speaking: SpeakingRecord[]
   /** Aggregate of words missed during dictation, for the "âm hay sót" table */
   missedWords: Record<string, number>
+  /** Saved transcripts so a long script can be done part-by-part across days */
+  scripts: SavedScript[]
 }
 
 function load(): SkillsData {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return { dictation: [], speaking: [], missedWords: {} }
+    if (!raw) return { dictation: [], speaking: [], missedWords: {}, scripts: [] }
     const p = JSON.parse(raw)
     return {
       dictation: Array.isArray(p?.dictation) ? p.dictation : [],
       speaking: Array.isArray(p?.speaking) ? p.speaking : [],
       missedWords: p?.missedWords && typeof p.missedWords === 'object' ? p.missedWords : {},
+      scripts: Array.isArray(p?.scripts) ? p.scripts : [],
     }
   } catch {
-    return { dictation: [], speaking: [], missedWords: {} }
+    return { dictation: [], speaking: [], missedWords: {}, scripts: [] }
   }
+}
+
+function uid() {
+  return 's_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7)
 }
 
 export const useSkillsStore = defineStore('skills', () => {
@@ -90,18 +106,52 @@ export const useSkillsStore = defineStore('skills', () => {
       .map(([word, count]) => ({ word, count })),
   )
 
+  // ===== Saved scripts =====
+  function addScript(title: string, text: string, chunkSize: number): string {
+    const id = uid()
+    data.value.scripts.unshift({
+      id,
+      title: title.trim() || 'Bài không tên',
+      text,
+      chunkSize,
+      completedChunks: [],
+      createdAt: new Date().toISOString(),
+    })
+    return id
+  }
+
+  function removeScript(id: string) {
+    data.value.scripts = data.value.scripts.filter((s) => s.id !== id)
+  }
+
+  function markChunkDone(scriptId: string, chunkIndex: number) {
+    const s = data.value.scripts.find((x) => x.id === scriptId)
+    if (s && !s.completedChunks.includes(chunkIndex)) {
+      s.completedChunks.push(chunkIndex)
+    }
+  }
+
+  function getScript(id: string): SavedScript | null {
+    return data.value.scripts.find((s) => s.id === id) ?? null
+  }
+
   function reset() {
-    data.value = { dictation: [], speaking: [], missedWords: {} }
+    data.value = { dictation: [], speaking: [], missedWords: {}, scripts: [] }
   }
 
   return {
     data,
+    scripts: computed(() => data.value.scripts),
     dictationCount,
     speakingCount,
     avgDictationAccuracy,
     topMissedWords,
     recordDictation,
     recordSpeaking,
+    addScript,
+    removeScript,
+    markChunkDone,
+    getScript,
     reset,
   }
 })
