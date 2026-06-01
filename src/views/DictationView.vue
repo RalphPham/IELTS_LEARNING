@@ -5,6 +5,7 @@ import { wordDiff, diffAccuracy, splitSentences, type DiffToken } from '@/utils/
 import { speak } from '@/utils/speech'
 import { useSkillsStore } from '@/stores/skills'
 import { useVocabularyStore } from '@/stores/vocabulary'
+import WordPopover from '@/components/WordPopover.vue'
 
 const router = useRouter()
 const skills = useSkillsStore()
@@ -117,6 +118,18 @@ function start() {
 function resetSentence() {
   userText.value = ''
   checked.value = false
+}
+
+// Word popover for inline EN→VI lookup on the reference sentence
+const activePopover = ref<{ word: string; x: number; y: number } | null>(null)
+function openWordPopover(e: MouseEvent, word: string) {
+  e.stopPropagation()
+  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+  activePopover.value = {
+    word: word.replace(/[^A-Za-z'-]/g, ''),
+    x: rect.left + rect.width / 2,
+    y: rect.top,
+  }
 }
 
 function playCurrent() {
@@ -385,10 +398,13 @@ const sessionAccuracy = computed(() =>
                 :class="[
                   t.type === 'match' ? 'text-emerald-700' : 'text-rose-600 font-bold underline',
                   isLearned(t.text) ? 'bg-amber-100 rounded px-0.5' : '',
+                  'cursor-pointer hover:bg-yellow-100 rounded px-0.5',
                 ]"
+                @click="openWordPopover($event, t.text)"
               >{{ t.text }} </span>
             </template>
           </p>
+          <p class="text-[10px] text-slate-400 mt-1">💡 Bấm vào từ bất kỳ để tra nghĩa.</p>
           <p v-if="tokens.some((t) => t.type === 'extra')" class="text-xs text-amber-600 mt-2">
             Từ bạn gõ thừa/sai:
             <span v-for="(t, i) in tokens.filter((x) => x.type === 'extra')" :key="i" class="font-mono">{{ t.text }} </span>
@@ -414,5 +430,16 @@ const sessionAccuracy = computed(() =>
         </div>
       </div>
     </div>
+
+    <Teleport to="body">
+      <WordPopover
+        v-if="activePopover"
+        :word="activePopover.word"
+        :context="current"
+        :x="activePopover.x"
+        :y="activePopover.y"
+        @close="activePopover = null"
+      />
+    </Teleport>
   </div>
 </template>

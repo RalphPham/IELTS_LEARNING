@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useVocabularyStore } from '@/stores/vocabulary'
 import type { Vocabulary } from '@/types/vocabulary'
 import { speak } from '@/utils/speech'
+import ClickableText from '@/components/ClickableText.vue'
 
 type ExerciseType = 'meaning' | 'cloze' | 'write'
 
@@ -308,7 +309,9 @@ const TYPE_META: Record<ExerciseType, { label: string; emoji: string }> = {
         <!-- ===== CLOZE ===== -->
         <template v-else-if="current.type === 'cloze'">
           <p class="text-sm text-slate-500 mb-2">Điền từ phù hợp vào chỗ trống:</p>
-          <p class="text-lg italic text-slate-800 leading-relaxed mb-4">{{ current.blanked }}</p>
+          <p class="text-lg italic text-slate-800 leading-relaxed mb-4">
+            <ClickableText :text="current.blanked ?? ''" />
+          </p>
           <div class="grid sm:grid-cols-2 gap-2">
             <button
               v-for="(opt, i) in current.options"
@@ -368,7 +371,7 @@ const TYPE_META: Record<ExerciseType, { label: string; emoji: string }> = {
           <ul v-if="current.item.examples.length" class="space-y-1 mt-2">
             <li v-for="(ex, i) in current.item.examples" :key="i" class="text-sm italic text-slate-700 flex items-start gap-2">
               <button class="text-indigo-500 shrink-0 mt-0.5" @click="speak(ex)">▶</button>
-              <span>{{ ex }}</span>
+              <span><ClickableText :text="ex" /></span>
             </li>
           </ul>
         </div>
@@ -378,7 +381,7 @@ const TYPE_META: Record<ExerciseType, { label: string; emoji: string }> = {
           <ul v-if="current.item.examples.length" class="space-y-1 mb-3">
             <li v-for="(ex, i) in current.item.examples" :key="i" class="text-sm italic text-slate-700 flex items-start gap-2">
               <button class="text-indigo-500 shrink-0 mt-0.5" @click="speak(ex)">▶</button>
-              <span>{{ ex }}</span>
+              <span><ClickableText :text="ex" /></span>
             </li>
           </ul>
           <p class="text-sm text-slate-600 mb-2">Câu của bạn ổn không?</p>

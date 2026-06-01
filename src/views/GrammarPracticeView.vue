@@ -6,6 +6,7 @@ import { QUESTIONS, questionsForTense } from '@/data/grammar/questions'
 import { findSpecialTopic, specialTopicName } from '@/data/grammar/specialTopics'
 import { useGrammarStore } from '@/stores/grammar'
 import type { GrammarQuestion, TenseId } from '@/types/grammar'
+import ClickableText from '@/components/ClickableText.vue'
 
 function combinedFor(tenseId: string, userQs: GrammarQuestion[]): GrammarQuestion[] {
   return [...questionsForTense(tenseId), ...userQs.filter((q) => q.tenseId === tenseId)]
@@ -212,7 +213,9 @@ const accuracy = computed(() => {
           <span>{{ current.type === 'mcq' ? 'Trắc nghiệm' : 'Điền vào chỗ trống' }}</span>
         </div>
 
-        <p class="text-lg sm:text-xl text-slate-800 leading-relaxed mb-1">{{ current.prompt }}</p>
+        <p class="text-lg sm:text-xl text-slate-800 leading-relaxed mb-1">
+          <ClickableText :text="current.prompt" />
+        </p>
         <p v-if="current.baseForm" class="text-xs text-slate-500 italic mb-4">
           Dạng cơ sở: <span class="font-mono">{{ current.baseForm }}</span>
         </p>
@@ -278,7 +281,8 @@ const accuracy = computed(() => {
             </span>
           </div>
           <p class="text-sm text-slate-700 leading-relaxed">
-            <span class="font-bold text-slate-900">Giải thích:</span> {{ current.explanation }}
+            <span class="font-bold text-slate-900">Giải thích:</span>
+            <ClickableText :text="' ' + current.explanation" />
           </p>
         </div>
 
