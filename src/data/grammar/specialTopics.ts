@@ -265,6 +265,122 @@ const PP_VS_PAST: SpecialTopic = {
   ],
 }
 
+const MODALS: SpecialTopic = {
+  id: 'modals',
+  name: 'Modal Verbs (Can / Could / Be able to / ...)',
+  nameVi: 'Modal Verbs — Can, Could, Be able to & Could have done',
+  emoji: '🛡️',
+  intro:
+    'Modal verbs (can, could, may, might, must, should, have to, be able to...) thêm sắc thái "khả năng / được phép / bắt buộc / suy đoán" vào động từ. Quy tắc chung: theo sau modal là V(bare). Quan trọng nhất ở IELTS: phân biệt CAN/COULD/BE ABLE TO (Murphy U26) và đặc biệt COULD vs COULD HAVE DONE (Murphy U27) — đây là kiến thức nâng cao hay bị sai.',
+  rules: [
+    {
+      conjunction: 'CAN',
+      meaningVi: 'khả năng/cho phép ở HIỆN TẠI hoặc tương lai gần',
+      patterns: [
+        {
+          situation: 'Khả năng chung ở hiện tại',
+          pattern: 'S + can + V(bare)',
+          example: 'I can speak three languages.',
+        },
+        {
+          situation: 'Xin/cho phép (thân mật)',
+          pattern: 'Can + S + V(bare)?',
+          example: 'Can I borrow your charger?',
+        },
+        {
+          situation: 'Phủ định: cannot / can\'t',
+          pattern: "S + can't + V(bare)",
+          example: "I can't swim very well.",
+        },
+      ],
+    },
+    {
+      conjunction: 'COULD (khả năng quá khứ chung)',
+      meaningVi: 'khả năng CHUNG/THƯỜNG XUYÊN trong quá khứ — KHÔNG dùng cho 1 lần cụ thể',
+      patterns: [
+        {
+          situation: 'Khả năng chung trong quá khứ (general ability)',
+          pattern: 'S + could + V(bare)',
+          example: 'When I was a child, I could swim very well.',
+        },
+        {
+          situation: '⚠️ KHÔNG dùng could cho 1 hành động cụ thể đã thành công',
+          pattern: 'Dùng "was/were able to" hoặc "managed to" thay thế',
+          example: 'The fire spread quickly, but everyone WAS ABLE TO escape. (KHÔNG: "could escape")',
+        },
+        {
+          situation: 'Couldn\'t — dùng được cho cả khả năng chung VÀ 1 lần cụ thể',
+          pattern: "S + couldn't + V(bare)",
+          example: "I couldn't find my keys this morning. (1 lần cụ thể — vẫn dùng couldn't)",
+        },
+      ],
+    },
+    {
+      conjunction: 'BE ABLE TO',
+      meaningVi: 'khả năng — dùng được ở mọi thì, đặc biệt cần thiết khi quá khứ "1 lần cụ thể"',
+      patterns: [
+        {
+          situation: 'Quá khứ "1 lần cụ thể" thành công → BẮT BUỘC dùng was/were able to',
+          pattern: 'S + was/were able to + V(bare)',
+          example: 'After hours of trying, I was finally able to fix the bug.',
+        },
+        {
+          situation: 'Tương lai (can KHÔNG đứng được sau will, must, ...)',
+          pattern: 'S + will + be able to + V(bare)',
+          example: "When the system upgrade is done, you will be able to log in faster.",
+        },
+        {
+          situation: 'Sau modal khác (must, might, should)',
+          pattern: 'S + modal + be able to + V(bare)',
+          example: 'You must be able to read English for this course.',
+        },
+      ],
+    },
+    {
+      conjunction: 'COULD DO vs COULD HAVE DONE ⭐',
+      meaningVi: 'điểm cao cấp Unit 27 — phân biệt khả năng "đang có" vs cơ hội đã bỏ lỡ trong quá khứ',
+      patterns: [
+        {
+          situation: 'COULD + V: gợi ý/khả năng ở HIỆN TẠI hoặc TƯƠNG LAI (chưa làm)',
+          pattern: 'S + could + V(bare)',
+          example: 'You look tired — you could take a nap. (gợi ý hiện tại)',
+        },
+        {
+          situation: 'COULD HAVE + V3: đáng lẽ có thể (nhưng đã không làm) — nuối tiếc/nhận định về quá khứ',
+          pattern: 'S + could have + V3/V-ed',
+          example: 'I could have helped you yesterday — why didn\'t you ask? (Tôi đã có thể giúp nhưng đã không làm)',
+        },
+        {
+          situation: 'COULDN\'T HAVE + V3: chắc chắn đã không thể (suy đoán quá khứ)',
+          pattern: "S + couldn't have + V3",
+          example: "She couldn't have stolen the laptop — she was with me all evening.",
+        },
+        {
+          situation: 'So sánh tinh tế: "could do" giả định hiện tại vs "could have done" hối tiếc quá khứ',
+          pattern: 'I could lend you money (now)  ⟷  I could have lent you money (yesterday — but didn\'t)',
+          example: 'I could fix it for you now. ⟷ I could have fixed it yesterday if you\'d called.',
+        },
+      ],
+    },
+    {
+      conjunction: 'LƯU Ý NHANH',
+      meaningVi: 'những điểm Vietnamese learners hay sai',
+      patterns: [
+        {
+          situation: 'Sau modal (can/could/will/should...) LUÔN là V(bare) — KHÔNG to V, KHÔNG -s',
+          pattern: 'S + modal + V(bare)',
+          example: 'She can SPEAK Japanese. (KHÔNG: can to speak / can speaks)',
+        },
+        {
+          situation: 'Phủ định: cannot viết LIỀN, can\'t có dấu nháy',
+          pattern: "cannot = can't",
+          example: "I can't (cannot) come tomorrow.",
+        },
+      ],
+    },
+  ],
+}
+
 export const SPECIAL_TOPICS: SpecialTopic[] = [
   {
     id: 'sequencing',
@@ -278,6 +394,7 @@ export const SPECIAL_TOPICS: SpecialTopic[] = [
   HAVE_GOT,
   USED_TO,
   PP_VS_PAST,
+  MODALS,
 ]
 
 export function findSpecialTopic(id: string): SpecialTopic | null {
