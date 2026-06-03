@@ -381,6 +381,122 @@ const MODALS: SpecialTopic = {
   ],
 }
 
+const MODALS_DEDUCTION: SpecialTopic = {
+  id: 'modals_deduction',
+  name: 'Modals of Deduction (Must / Can\'t / May / Might)',
+  nameVi: 'Modal Verbs — Suy luận logic (Must / Can\'t / May / Might)',
+  emoji: '🔎',
+  intro:
+    'Nhóm modal dùng để SUY LUẬN/PHÁN ĐOÁN về sự thật, không phải khả năng. Mức độ chắc chắn từ cao xuống thấp: MUST (chắc chắn 99% là CÓ) — MAY/MIGHT/COULD (có thể 50/50) — CAN\'T (chắc chắn 99% là KHÔNG). Murphy U28: must & can\'t. Murphy U29: may & might. Cấu trúc hiện tại: modal + V(bare). Cấu trúc quá khứ: modal + have + V3.',
+  rules: [
+    {
+      conjunction: 'MUST (chắc chắn CÓ)',
+      meaningVi: 'suy luận logic dương — bạn chắc chắn 99% chuyện đó đúng',
+      patterns: [
+        {
+          situation: 'Suy luận hiện tại — chắc chắn dương',
+          pattern: 'S + must + V(bare) / be + adj',
+          example: "He's been coding all day — he must be tired.",
+        },
+        {
+          situation: 'Suy luận trạng thái đang diễn ra',
+          pattern: 'S + must + be + V-ing',
+          example: 'The lights are on — they must be working late.',
+        },
+        {
+          situation: '⭐ Suy luận về QUÁ KHỨ — chắc chắn đã xảy ra',
+          pattern: 'S + must have + V3',
+          example: 'The grass is wet — it must have rained last night.',
+        },
+      ],
+    },
+    {
+      conjunction: "CAN'T / COULDN'T (chắc chắn KHÔNG)",
+      meaningVi: 'suy luận logic âm — bạn chắc chắn 99% chuyện đó SAI. Đây là phủ định của "must" trong suy luận (KHÔNG dùng "mustn\'t")',
+      patterns: [
+        {
+          situation: 'Suy luận hiện tại — chắc chắn âm',
+          pattern: "S + can't + V(bare) / be + adj",
+          example: "He just ate three bowls of rice — he can't be hungry.",
+        },
+        {
+          situation: '⚠️ KHÔNG dùng "mustn\'t" cho suy luận. "Mustn\'t" = cấm.',
+          pattern: "must (chắc chắn CÓ)  ⟷  can't (chắc chắn KHÔNG)",
+          example: 'This can\'t be the right address — there\'s no number 99 here.',
+        },
+        {
+          situation: '⭐ Suy luận về QUÁ KHỨ — chắc chắn KHÔNG xảy ra',
+          pattern: "S + can't have / couldn't have + V3",
+          example: "She can't have stolen the laptop — she was with me.",
+        },
+      ],
+    },
+    {
+      conjunction: 'MAY / MIGHT / COULD (có thể — 50/50)',
+      meaningVi: 'suy luận khả năng — có thể đúng, có thể sai, bạn không chắc',
+      patterns: [
+        {
+          situation: 'Khả năng ở hiện tại/tương lai (3 modal gần như tương đương)',
+          pattern: 'S + may/might/could + V(bare)',
+          example: 'I might upgrade my laptop next month — not sure yet.',
+        },
+        {
+          situation: 'Trạng thái đang diễn ra (có thể)',
+          pattern: 'S + may/might/could + be + V-ing',
+          example: "She isn't answering — she may be sleeping.",
+        },
+        {
+          situation: 'Phủ định: may not / might not (KHÔNG viết tắt "mightn\'t" trong văn viết)',
+          pattern: 'S + may not / might not + V(bare)',
+          example: 'I might not come to the party — I have work to finish.',
+        },
+        {
+          situation: '⭐ Khả năng đã xảy ra trong QUÁ KHỨ',
+          pattern: 'S + may/might/could have + V3',
+          example: 'I can\'t find my phone — I might have left it at the café.',
+        },
+      ],
+    },
+    {
+      conjunction: 'BẢNG TÓM TẮT MỨC ĐỘ CHẮC CHẮN',
+      meaningVi: 'thang chắc chắn giúp chọn đúng modal',
+      patterns: [
+        {
+          situation: 'Chắc chắn CÓ (99%)',
+          pattern: 'MUST + V(bare)   |   MUST HAVE + V3',
+          example: 'He must be exhausted. ⟶ He must have worked all night.',
+        },
+        {
+          situation: 'Có thể (40-60%)',
+          pattern: 'MAY / MIGHT / COULD + V(bare)   |   ... + HAVE + V3',
+          example: "She may be at lunch. ⟶ She may have gone home already.",
+        },
+        {
+          situation: 'Chắc chắn KHÔNG (99%)',
+          pattern: "CAN'T + V(bare)   |   CAN'T HAVE / COULDN'T HAVE + V3",
+          example: "That can't be true. ⟶ He can't have done it alone.",
+        },
+      ],
+    },
+    {
+      conjunction: 'LƯU Ý NHANH',
+      meaningVi: 'những bẫy thường gặp',
+      patterns: [
+        {
+          situation: '"Mustn\'t" KHÁC "can\'t" — đừng nhầm!',
+          pattern: "mustn't = cấm (rule)   |   can't = suy luận âm",
+          example: "You mustn't park here. (cấm)  ⟷  That can't be Minh — he's in Da Lat. (suy luận)",
+        },
+        {
+          situation: 'Sau modal LUÔN V(bare); quá khứ thì modal + have + V3 (KHÔNG có "to")',
+          pattern: 'modal + V(bare)   |   modal + have + V3',
+          example: 'She must have known. (KHÔNG: must to know / must known)',
+        },
+      ],
+    },
+  ],
+}
+
 export const SPECIAL_TOPICS: SpecialTopic[] = [
   {
     id: 'sequencing',
@@ -395,6 +511,7 @@ export const SPECIAL_TOPICS: SpecialTopic[] = [
   USED_TO,
   PP_VS_PAST,
   MODALS,
+  MODALS_DEDUCTION,
 ]
 
 export function findSpecialTopic(id: string): SpecialTopic | null {

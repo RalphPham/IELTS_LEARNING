@@ -18,6 +18,7 @@ export type TenseId =
   | 'used_to'
   | 'pp_vs_past'
   | 'modals'
+  | 'modals_deduction'
 
 export type TenseGroup = 'present' | 'past' | 'future'
 
