@@ -497,6 +497,148 @@ const MODALS_DEDUCTION: SpecialTopic = {
   ],
 }
 
+const CONDITIONALS: SpecialTopic = {
+  id: 'conditionals',
+  name: 'Conditionals (If clauses)',
+  nameVi: 'Câu điều kiện (If clauses) — Loại 0/1/2/3',
+  emoji: '🧩',
+  intro:
+    'Câu điều kiện kết nối 2 mệnh đề: IF + điều kiện → kết quả. Bốn loại chính, phân biệt bằng "có thật không" và "thì nào": Loại 0 (sự thật chung), Loại 1 (có thể xảy ra ở hiện tại/tương lai), Loại 2 (trái với thực tế hiện tại — giả định), Loại 3 (trái với thực tế quá khứ — nuối tiếc). Mixed là kết hợp Loại 3 + Loại 2 (giả thiết quá khứ → kết quả hiện tại).',
+  rules: [
+    {
+      conjunction: 'LOẠI 0 (sự thật chung — General truth)',
+      meaningVi: 'sự thật hiển nhiên, quy luật khoa học, luôn đúng',
+      patterns: [
+        {
+          situation: 'Quy luật/sự thật — cả 2 vế đều hiện tại đơn',
+          pattern: 'IF + S + V(s/es), S + V(s/es)',
+          example: 'If you heat water to 100°C, it boils.',
+        },
+        {
+          situation: 'Có thể thay "if" bằng "when" mà nghĩa không đổi',
+          pattern: 'WHEN + present, present',
+          example: 'When I drink coffee at night, I can\'t sleep.',
+        },
+      ],
+    },
+    {
+      conjunction: 'LOẠI 1 (có thật — Real future)',
+      meaningVi: 'điều kiện có khả năng xảy ra ở hiện tại/tương lai',
+      patterns: [
+        {
+          situation: 'Mệnh đề IF: hiện tại đơn — vế kết quả: will + V(bare)',
+          pattern: 'IF + S + V(s/es), S + will + V(bare)',
+          example: 'If it rains tomorrow, we will cancel the picnic.',
+        },
+        {
+          situation: '⚠️ TUYỆT ĐỐI KHÔNG dùng will trong mệnh đề IF',
+          pattern: 'KHÔNG: If you will help me, ...',
+          example: 'If you help me (KHÔNG: will help me), I\'ll finish on time.',
+        },
+        {
+          situation: 'Có thể thay will bằng can/may/might/should ở vế kết quả',
+          pattern: 'IF + present, S + can/may/might/should + V(bare)',
+          example: 'If you arrive early, you can grab a good seat.',
+        },
+        {
+          situation: 'Lệnh/đề nghị ở vế kết quả',
+          pattern: 'IF + present, imperative',
+          example: 'If you see Lan, tell her to call me.',
+        },
+      ],
+    },
+    {
+      conjunction: 'LOẠI 2 (giả định — Unreal present)',
+      meaningVi: 'trái với thực tế HIỆN TẠI — giả sử/giả định không có thật',
+      patterns: [
+        {
+          situation: 'IF: quá khứ đơn — vế kết quả: would + V(bare)',
+          pattern: 'IF + S + V(quá khứ), S + would + V(bare)',
+          example: 'If I had more RAM, I could run this virtual machine. (Thực tế: không có)',
+        },
+        {
+          situation: '⭐ Với "be", DÙNG "were" cho tất cả ngôi (kể cả I/he/she)',
+          pattern: 'IF + S + were, S + would + V(bare)',
+          example: 'If I were you, I would accept the offer. (KHÔNG: If I was you)',
+        },
+        {
+          situation: 'Thay would bằng could/might để diễn tả khả năng/sự cho phép',
+          pattern: 'IF + V(quá khứ), S + could/might + V(bare)',
+          example: 'If we had more time, we could visit the museum.',
+        },
+        {
+          situation: 'Đưa ra lời khuyên gián tiếp với "If I were you, I would..."',
+          pattern: 'If I were you, I would + V(bare)',
+          example: 'If I were you, I would talk to a doctor.',
+        },
+      ],
+    },
+    {
+      conjunction: 'LOẠI 3 (nuối tiếc — Unreal past)',
+      meaningVi: 'trái với thực tế QUÁ KHỨ — chuyện đã không xảy ra, thường thể hiện nuối tiếc',
+      patterns: [
+        {
+          situation: 'IF: quá khứ hoàn thành — vế kết quả: would have + V3',
+          pattern: 'IF + S + had + V3, S + would have + V3',
+          example: 'If I had checked the log more carefully, the system wouldn\'t have crashed. (Thực tế: đã không check kỹ → đã crash)',
+        },
+        {
+          situation: 'Thay would have bằng could have / might have',
+          pattern: 'IF + had + V3, S + could/might have + V3',
+          example: 'If she had studied harder, she could have passed the exam.',
+        },
+        {
+          situation: 'Phủ định ở vế IF: had + not + V3 (= hadn\'t V3)',
+          pattern: "IF + S + hadn't + V3, ...",
+          example: "If I hadn't missed the train, I would have arrived on time.",
+        },
+      ],
+    },
+    {
+      conjunction: 'MIXED (Loại 3 + 2)',
+      meaningVi: 'giả thiết quá khứ → kết quả ở HIỆN TẠI',
+      patterns: [
+        {
+          situation: 'Vế IF dùng L3 (had + V3), vế kết quả dùng L2 (would + V bare)',
+          pattern: 'IF + S + had + V3, S + would + V(bare)',
+          example: 'If I had studied medicine, I would be a doctor now. (QK: không học y → HT: không là bác sĩ)',
+        },
+        {
+          situation: 'Thường có "now"/"today" ở vế kết quả',
+          pattern: '..., S + would + V(bare) + now/today',
+          example: 'If she had saved her money, she wouldn\'t be in debt now.',
+        },
+      ],
+    },
+    {
+      conjunction: 'LƯU Ý NHANH',
+      meaningVi: 'những lỗi kinh điển',
+      patterns: [
+        {
+          situation: '⚠️ KHÔNG bao giờ dùng "will/would" trong mệnh đề IF (chỉ ngoài thực tế)',
+          pattern: 'IF + present  (KHÔNG IF + will)',
+          example: "If you will help → ❌  |  If you help → ✓",
+        },
+        {
+          situation: 'Mệnh đề IF có thể đứng trước hoặc sau, không đổi nghĩa',
+          pattern: '[IF clause, main]  =  [main IF clause]',
+          example: 'If it rains, we\'ll stay home. = We\'ll stay home if it rains.',
+        },
+        {
+          situation: 'Khi IF đứng trước, có DẤU PHẨY ngăn 2 vế; đứng sau thì không',
+          pattern: 'IF ..., ...   |   ... IF ...',
+          example: 'If I had time, I\'d come. ⟷ I\'d come if I had time.',
+        },
+        {
+          situation: '"Unless" = "if not" — kéo theo động từ KHẲNG ĐỊNH',
+          pattern: 'UNLESS + S + V (= If S + don\'t/doesn\'t V)',
+          example: "I won't go unless you come with me. (= if you don't come)",
+        },
+      ],
+    },
+  ],
+}
+
 export const SPECIAL_TOPICS: SpecialTopic[] = [
   {
     id: 'sequencing',
@@ -512,6 +654,7 @@ export const SPECIAL_TOPICS: SpecialTopic[] = [
   PP_VS_PAST,
   MODALS,
   MODALS_DEDUCTION,
+  CONDITIONALS,
 ]
 
 export function findSpecialTopic(id: string): SpecialTopic | null {

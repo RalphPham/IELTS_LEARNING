@@ -19,6 +19,7 @@ export type TenseId =
   | 'pp_vs_past'
   | 'modals'
   | 'modals_deduction'
+  | 'conditionals'
 
 export type TenseGroup = 'present' | 'past' | 'future'
 
