@@ -639,6 +639,194 @@ const CONDITIONALS: SpecialTopic = {
   ],
 }
 
+const MODALS_OBLIGATION: SpecialTopic = {
+  id: 'modals_obligation',
+  name: "Modals — Obligation, Necessity & Advice (Must/Have to/Should/Had better)",
+  nameVi: 'Modal — Bắt buộc, Cần thiết & Lời khuyên',
+  emoji: '⚠️',
+  intro:
+    'Nhóm modal về NGHĨA VỤ (must, have to), CẤM (mustn\'t), KHÔNG CẦN (needn\'t / don\'t have to), LỜI KHUYÊN (should, ought to, had better) và VIỆC ĐÁNG LẼ NÊN LÀM trong quá khứ (should have done). Murphy Units 31-35. Bẫy lớn nhất: phân biệt MUSTN\'T (cấm) vs DON\'T HAVE TO / NEEDN\'T (không bắt buộc) — nghĩa hoàn toàn khác nhau.',
+  rules: [
+    {
+      conjunction: 'MUST vs HAVE TO (bắt buộc)',
+      meaningVi: 'cả 2 đều = phải làm, nhưng sắc thái khác nhau',
+      patterns: [
+        {
+          situation: 'MUST: nghĩa vụ từ NGƯỜI NÓI (cảm xúc cá nhân, quy định mạnh)',
+          pattern: 'S + must + V(bare)',
+          example: "I must finish this report tonight. (Tôi tự ép mình)",
+        },
+        {
+          situation: 'HAVE TO: nghĩa vụ từ BÊN NGOÀI (quy định, luật, sếp, hoàn cảnh)',
+          pattern: 'S + have/has to + V(bare)',
+          example: "I have to wear a uniform at work. (Quy định công ty)",
+        },
+        {
+          situation: 'Quá khứ CHỈ DÙNG "had to" — KHÔNG có "musted"',
+          pattern: 'S + had to + V(bare)',
+          example: 'Yesterday I had to work until midnight.',
+        },
+        {
+          situation: 'Tương lai: will have to (KHÔNG dùng "will must")',
+          pattern: 'S + will have to + V(bare)',
+          example: 'You will have to apply for a visa next month.',
+        },
+      ],
+    },
+    {
+      conjunction: "MUSTN'T vs DON'T HAVE TO / NEEDN'T ⭐",
+      meaningVi: 'BẪY KINH ĐIỂN — nghĩa hoàn toàn khác nhau',
+      patterns: [
+        {
+          situation: "MUSTN'T = CẤM (don't do it)",
+          pattern: "S + mustn't + V(bare)",
+          example: "You mustn't smoke in the hospital. (CẤM hút thuốc)",
+        },
+        {
+          situation: "DON'T HAVE TO = KHÔNG BẮT BUỘC (bạn có thể làm hoặc không)",
+          pattern: "S + don't/doesn't have to + V(bare)",
+          example: "You don't have to come if you're busy. (Không bắt buộc)",
+        },
+        {
+          situation: "NEEDN'T = không cần thiết (đồng nghĩa với don't have to)",
+          pattern: "S + needn't + V(bare)",
+          example: "You needn't bring food — we have plenty.",
+        },
+        {
+          situation: '⚠️ So sánh:',
+          pattern: "mustn't (cấm)  ⟷  don't have to / needn't (không bắt buộc)",
+          example: "You mustn't tell anyone (cấm) ⟷ You don't have to tell anyone (tuỳ bạn).",
+        },
+        {
+          situation: "Quá khứ của needn't: didn't need to (KHÔNG cần làm) ⟷ needn't have V3 (đã làm dù không cần)",
+          pattern: "S + didn't need to + V   |   S + needn't have + V3",
+          example: "I didn't need to buy bread (không mua) ⟷ I needn't have bought bread (đã mua, hoá ra dư).",
+        },
+      ],
+    },
+    {
+      conjunction: 'SHOULD / OUGHT TO (lời khuyên)',
+      meaningVi: 'đưa ra lời khuyên hoặc nói điều đáng lẽ nên xảy ra',
+      patterns: [
+        {
+          situation: 'Lời khuyên ở hiện tại — should + V(bare)',
+          pattern: 'S + should + V(bare)',
+          example: 'You should drink more water.',
+        },
+        {
+          situation: '"Ought to" = should (mạnh hơn 1 chút, formal hơn)',
+          pattern: 'S + ought to + V(bare)',
+          example: 'You ought to apologise to her.',
+        },
+        {
+          situation: 'Phủ định: shouldn\'t / ought not to',
+          pattern: "S + shouldn't + V(bare)",
+          example: "You shouldn't work so late every night.",
+        },
+        {
+          situation: 'Nhận xét điều đáng lẽ đang xảy ra ở HT (chỉ trích/dự đoán)',
+          pattern: 'S + should + V(bare)',
+          example: 'The bus should be here by now — where is it?',
+        },
+      ],
+    },
+    {
+      conjunction: 'SHOULD HAVE + V3 ⭐ (Murphy U34)',
+      meaningVi: 'đáng lẽ NÊN làm gì trong QUÁ KHỨ nhưng đã không làm (nuối tiếc/chỉ trích)',
+      patterns: [
+        {
+          situation: 'Hành động đáng lẽ nên làm — nhưng đã KHÔNG làm',
+          pattern: 'S + should have + V3',
+          example: "You should have told me earlier. (Bạn đã KHÔNG nói)",
+        },
+        {
+          situation: 'Phủ định: đáng lẽ KHÔNG nên làm — nhưng đã làm',
+          pattern: "S + shouldn't have + V3",
+          example: "I shouldn't have eaten so much. (Tôi đã ăn quá nhiều)",
+        },
+        {
+          situation: 'Tương tự với "ought to"',
+          pattern: 'S + ought to have + V3',
+          example: 'She ought to have called us when she arrived.',
+        },
+        {
+          situation: '⚠️ Giống "could have done" nhưng khác sắc thái: could have = đã có thể; should have = đáng lẽ nên',
+          pattern: 'could have V3 (cơ hội)  ⟷  should have V3 (nghĩa vụ/khuyên)',
+          example: 'I could have helped (đã có thể) ⟷ I should have helped (đáng lẽ phải).',
+        },
+      ],
+    },
+    {
+      conjunction: 'HAD BETTER (cảnh báo/khuyên mạnh)',
+      meaningVi: 'tốt hơn hết là nên làm gì — mạnh hơn "should", thường ngụ ý hậu quả xấu nếu không làm',
+      patterns: [
+        {
+          situation: 'Khẳng định — viết tắt: \'d better',
+          pattern: "S + had better ('d better) + V(bare)",
+          example: "You'd better leave now or you'll miss the train.",
+        },
+        {
+          situation: 'Phủ định — \'d better not (KHÔNG had better don\'t)',
+          pattern: "S + had better not + V(bare)",
+          example: "You'd better not be late again.",
+        },
+        {
+          situation: '⚠️ KHÔNG có "to": had better V(bare), KHÔNG "had better to V"',
+          pattern: "had better + V(bare)",
+          example: "You'd better hurry (KHÔNG: had better to hurry).",
+        },
+        {
+          situation: 'Dù dùng "had", nó nói về HIỆN TẠI/TƯƠNG LAI (không phải quá khứ)',
+          pattern: "Present/future meaning",
+          example: "We'd better book tickets now — they sell out fast.",
+        },
+      ],
+    },
+    {
+      conjunction: "IT'S TIME + V(quá khứ) ⭐",
+      meaningVi: 'đã đến lúc làm gì rồi (giả định/đáng lẽ đã phải bắt đầu) — dùng cấu trúc giả định',
+      patterns: [
+        {
+          situation: '⭐ Sau "It\'s time" + S → dùng V(quá khứ) (subjunctive)',
+          pattern: "It's time + S + V(quá khứ)",
+          example: "It's time you went to bed. (Đến giờ bạn đi ngủ rồi — KHÔNG \"go to bed\")",
+        },
+        {
+          situation: 'Mạnh hơn: It\'s high time / It\'s about time',
+          pattern: "It's (high/about) time + S + V(quá khứ)",
+          example: "It's high time the government did something.",
+        },
+        {
+          situation: 'Hoặc cấu trúc đơn giản: It\'s time + to V (chung chung, không chỉ ai)',
+          pattern: "It's time to + V(bare)",
+          example: "It's time to leave.",
+        },
+      ],
+    },
+    {
+      conjunction: 'LƯU Ý NHANH',
+      meaningVi: 'những lỗi hay gặp',
+      patterns: [
+        {
+          situation: 'Sau modal LUÔN V(bare). Quá khứ: modal + have + V3',
+          pattern: 'modal + V(bare)   |   modal + have + V3',
+          example: "should call (KHÔNG should to call)  |  should have called",
+        },
+        {
+          situation: 'Have to chia theo thì (have/has/had/will have to); must KHÔNG đổi',
+          pattern: "must = same all tenses  |  have to = changes",
+          example: "He has to work. ⟷ He must work. (HT cả 2)",
+        },
+        {
+          situation: 'Có thể dùng "need to" thay "have to" (cả 2 đồng nghĩa)',
+          pattern: "S + need to + V(bare)  ≈  S + have to + V(bare)",
+          example: 'You need to study more. = You have to study more.',
+        },
+      ],
+    },
+  ],
+}
+
 export const SPECIAL_TOPICS: SpecialTopic[] = [
   {
     id: 'sequencing',
@@ -654,6 +842,7 @@ export const SPECIAL_TOPICS: SpecialTopic[] = [
   PP_VS_PAST,
   MODALS,
   MODALS_DEDUCTION,
+  MODALS_OBLIGATION,
   CONDITIONALS,
 ]
 

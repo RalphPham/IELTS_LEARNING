@@ -20,6 +20,7 @@ export type TenseId =
   | 'modals'
   | 'modals_deduction'
   | 'conditionals'
+  | 'modals_obligation'
 
 export type TenseGroup = 'present' | 'past' | 'future'
 
