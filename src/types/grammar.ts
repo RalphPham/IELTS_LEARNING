@@ -21,6 +21,9 @@ export type TenseId =
   | 'modals_deduction'
   | 'conditionals'
   | 'modals_obligation'
+  | 'passive'
+  | 'causative'
+  | 'reported_speech'
 
 export type TenseGroup = 'present' | 'past' | 'future'
 

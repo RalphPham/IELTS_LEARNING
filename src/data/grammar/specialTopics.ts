@@ -827,6 +827,352 @@ const MODALS_OBLIGATION: SpecialTopic = {
   ],
 }
 
+const PASSIVE: SpecialTopic = {
+  id: 'passive',
+  name: 'Passive Voice (Active vs Passive across all tenses + special structures)',
+  nameVi: 'Bị động — Mọi thì + cấu trúc đặc biệt (It is said that…)',
+  emoji: '🔄',
+  intro:
+    'Câu bị động dùng khi chủ thể KHÔNG quan trọng / không biết / muốn nhấn mạnh hành động. Công thức gốc: BE + V3. Mỗi thì có dạng bị động riêng — phải nhớ. Murphy U40-41: dạng nâng cao (be done / been done / being done) và cấu trúc tường thuật khách quan "It is said that..." (vũ khí Writing Task 2).',
+  rules: [
+    {
+      conjunction: 'CÔNG THỨC CHUNG',
+      meaningVi: 'BE + V3 — chia "be" theo thì của câu chủ động',
+      patterns: [
+        {
+          situation: 'Chủ động → Bị động: đảo tân ngữ lên đầu, dùng be + V3',
+          pattern: 'O + be + V3 (+ by S)',
+          example: 'They cleaned the room. → The room was cleaned (by them).',
+        },
+        {
+          situation: '"By + agent" CHỈ thêm khi cần (thường bỏ nếu chủ thể không quan trọng)',
+          pattern: '(by + agent) — optional',
+          example: 'My bike was stolen. (KHÔNG cần "by someone")',
+        },
+      ],
+    },
+    {
+      conjunction: 'BỊ ĐỘNG THEO 12 THÌ',
+      meaningVi: 'thuộc bảng này là xử lý được mọi câu',
+      patterns: [
+        {
+          situation: 'Present Simple: am/is/are + V3',
+          pattern: 'S + am/is/are + V3',
+          example: 'Rice is grown in Vietnam.',
+        },
+        {
+          situation: 'Present Continuous: am/is/are + being + V3',
+          pattern: 'S + am/is/are + being + V3',
+          example: 'The system is being updated right now.',
+        },
+        {
+          situation: 'Present Perfect: have/has + been + V3',
+          pattern: 'S + have/has + been + V3',
+          example: 'The report has been completed.',
+        },
+        {
+          situation: 'Past Simple: was/were + V3',
+          pattern: 'S + was/were + V3',
+          example: 'The bridge was built in 1980.',
+        },
+        {
+          situation: 'Past Continuous: was/were + being + V3',
+          pattern: 'S + was/were + being + V3',
+          example: 'The road was being repaired yesterday.',
+        },
+        {
+          situation: 'Past Perfect: had + been + V3',
+          pattern: 'S + had + been + V3',
+          example: 'The letter had been sent before he arrived.',
+        },
+        {
+          situation: 'Future Simple: will + be + V3',
+          pattern: 'S + will + be + V3',
+          example: 'The new app will be released next month.',
+        },
+        {
+          situation: 'Future Perfect: will + have + been + V3',
+          pattern: 'S + will + have + been + V3',
+          example: 'By Friday, the project will have been finished.',
+        },
+        {
+          situation: 'Be going to: am/is/are + going to + be + V3',
+          pattern: 'S + going to be + V3',
+          example: 'The results are going to be announced soon.',
+        },
+        {
+          situation: 'Modal + passive: modal + be + V3',
+          pattern: 'S + modal + be + V3',
+          example: 'This must be done immediately. / It can be solved.',
+        },
+        {
+          situation: 'Modal perfect passive: modal + have been + V3',
+          pattern: 'S + modal + have been + V3',
+          example: 'The window must have been broken last night.',
+        },
+      ],
+    },
+    {
+      conjunction: 'IT IS SAID THAT… / S + IS SUPPOSED TO + V ⭐',
+      meaningVi: 'cấu trúc tường thuật khách quan — Murphy U41, vũ khí Writing Task 2',
+      patterns: [
+        {
+          situation: 'Cấu trúc 1: It + be + V3 + that + clause',
+          pattern: 'It is said/believed/thought/reported that + S + V',
+          example: 'It is said that the new policy will reduce traffic. (Người ta nói rằng…)',
+        },
+        {
+          situation: 'Cấu trúc 2: S + be + V3 + to V/to have V3',
+          pattern: 'S + is/are said/believed + to + V(bare)',
+          example: 'He is said to be one of the richest men in Asia. (Người ta cho rằng…)',
+        },
+        {
+          situation: 'Với hành động đã xảy ra: be + V3 + to have V3',
+          pattern: 'S + is + V3 + to have + V3',
+          example: 'The painting is believed to have been stolen.',
+        },
+        {
+          situation: 'Verbs hay dùng: say, believe, think, report, expect, know, suppose, consider',
+          pattern: '...',
+          example: 'She is reported to be missing. / Vaccines are believed to be effective.',
+        },
+      ],
+    },
+    {
+      conjunction: '2 TÂN NGỮ — give/send/show + sb + sth',
+      meaningVi: 'verb có 2 tân ngữ → có 2 cách chuyển bị động',
+      patterns: [
+        {
+          situation: 'Active: S + V + O(person) + O(thing)',
+          pattern: 'They gave me a book. → 2 cách:',
+          example: '1) I was given a book. (chủ thể là người)  2) A book was given to me. (chủ thể là vật)',
+        },
+        {
+          situation: 'Cách 1 thường tự nhiên hơn trong tiếng Anh',
+          pattern: 'O(person) + be + V3 + O(thing)',
+          example: 'She was sent a letter. / We are taught English by Mr Khoa.',
+        },
+      ],
+    },
+    {
+      conjunction: 'LƯU Ý',
+      meaningVi: 'những điểm hay nhầm',
+      patterns: [
+        {
+          situation: 'Verb intransitive (KHÔNG có tân ngữ) → KHÔNG có dạng bị động',
+          pattern: 'arrive, happen, exist, die, fall... → no passive',
+          example: '"The accident happened" KHÔNG → "was happened"',
+        },
+        {
+          situation: 'Sau modal/help/let/make + V(bare) chủ động; bị động: be + V3',
+          pattern: 'modal + be + V3',
+          example: 'He must do it. → It must be done. (KHÔNG "must to be done")',
+        },
+        {
+          situation: 'Be born = bị động cố định — không có "born" chủ động',
+          pattern: 'S + was/were + born',
+          example: 'I was born in 1995. (KHÔNG: I born)',
+        },
+      ],
+    },
+  ],
+}
+
+const CAUSATIVE: SpecialTopic = {
+  id: 'causative',
+  name: 'Causative — Have/Get Something Done (Outsource)',
+  nameVi: 'Causative — Have/Get sth done (Nhờ/Thuê người làm)',
+  emoji: '🛠️',
+  intro:
+    'Cấu trúc "have/get sth done" = thuê/nhờ ai đó làm hộ bạn (không tự làm). Bạn TRẢ TIỀN hoặc YÊU CẦU, người khác thực hiện. Murphy U42. Cực hữu dụng để mô tả dịch vụ: cắt tóc, sửa xe, làm nail, lắp đặt... Đừng nhầm với "have done sth" (Hiện tại hoàn thành — bạn tự làm xong).',
+  rules: [
+    {
+      conjunction: 'CÔNG THỨC CHÍNH',
+      meaningVi: 'S + have/get + O + V3',
+      patterns: [
+        {
+          situation: '"Have" — trung lập, formal hơn',
+          pattern: 'S + have/has/had + O + V3',
+          example: 'I had my car repaired yesterday. (Tôi đem xe đi sửa)',
+        },
+        {
+          situation: '"Get" — informal, văn nói',
+          pattern: 'S + get/got + O + V3',
+          example: 'I got my hair cut last weekend. (Tôi đi cắt tóc)',
+        },
+        {
+          situation: 'Chia "have/get" theo thì câu',
+          pattern: '...',
+          example: "I'm getting my nails done now. / She'll have her photo taken tomorrow.",
+        },
+      ],
+    },
+    {
+      conjunction: 'PHÂN BIỆT QUAN TRỌNG ⭐',
+      meaningVi: 'have/get sth done vs have done sth',
+      patterns: [
+        {
+          situation: '"Have sth done" = nhờ/thuê (passive, người khác làm)',
+          pattern: 'S + have + O + V3',
+          example: 'I have my car cleaned every week. (Người ta rửa xe cho tôi)',
+        },
+        {
+          situation: '"Have done sth" = HTHT, TÔI tự làm xong',
+          pattern: 'S + have + V3 + O',
+          example: 'I have cleaned my car. (Tôi tự rửa xe)',
+        },
+        {
+          situation: '⚠️ Ý nghĩa khác hẳn nhau — phân biệt qua VỊ TRÍ của V3',
+          pattern: 'O ĐỨNG TRƯỚC V3 → causative   |   V3 đứng trước O → HTHT',
+          example: 'I had the report typed. (nhờ đánh máy) ⟷ I had typed the report. (tự đánh máy xong)',
+        },
+      ],
+    },
+    {
+      conjunction: 'KHI CÓ BIẾN CỐ XẤU (Have something happen to you)',
+      meaningVi: 'còn có nghĩa: bị ai đó làm gì với bạn (không mong muốn)',
+      patterns: [
+        {
+          situation: '"Have/get sth done" trong ngữ cảnh tiêu cực',
+          pattern: 'S + had + O + V3 (= bị mất/bị hỏng do người khác)',
+          example: 'He had his wallet stolen on the bus. (Hắn bị móc ví — không mong muốn)',
+        },
+      ],
+    },
+  ],
+}
+
+const REPORTED_SPEECH: SpecialTopic = {
+  id: 'reported_speech',
+  name: 'Reported Speech — Tense Backshift',
+  nameVi: 'Câu tường thuật — Lùi thì',
+  emoji: '🗣️',
+  intro:
+    'Câu tường thuật = thuật lại lời người khác nói (indirect speech). Quy tắc vàng: nếu động từ tường thuật (said, told...) ở QUÁ KHỨ → LÙI THÌ thì trong mệnh đề tường thuật xuống 1 bậc. Đổi đại từ + trạng từ thời gian/vị trí cho phù hợp. Murphy U43.',
+  rules: [
+    {
+      conjunction: 'BẢNG LÙI THÌ',
+      meaningVi: 'tense trong trích dẫn → tense sau "said"',
+      patterns: [
+        {
+          situation: 'Present Simple → Past Simple',
+          pattern: '"I work here" → He said (that) he worked there.',
+          example: '"I love coffee." → She said she loved coffee.',
+        },
+        {
+          situation: 'Present Continuous → Past Continuous',
+          pattern: '"I am coding" → He said he was coding.',
+          example: '"I\'m working." → He said he was working.',
+        },
+        {
+          situation: 'Present Perfect → Past Perfect',
+          pattern: '"I have finished" → He said he had finished.',
+          example: '"I have eaten." → She said she had eaten.',
+        },
+        {
+          situation: 'Past Simple → Past Perfect',
+          pattern: '"I saw it" → He said he had seen it.',
+          example: '"I went home." → She said she had gone home.',
+        },
+        {
+          situation: 'Will → Would',
+          pattern: '"I will help" → He said he would help.',
+          example: '"I will call you." → He said he would call me.',
+        },
+        {
+          situation: 'Can → Could; May → Might; Must → Had to',
+          pattern: '"I can swim" → He said he could swim.',
+          example: '"I must leave." → She said she had to leave.',
+        },
+      ],
+    },
+    {
+      conjunction: 'ĐỔI ĐẠI TỪ VÀ THỜI GIAN',
+      meaningVi: 'đổi cho phù hợp với người tường thuật + thời điểm tường thuật',
+      patterns: [
+        {
+          situation: 'Đại từ thay đổi theo ngữ cảnh',
+          pattern: 'I → he/she ; you → I/he/she ; we → they',
+          example: '"I love you." → He said he loved me.',
+        },
+        {
+          situation: 'Trạng từ thời gian',
+          pattern: 'now → then ; today → that day ; tomorrow → the next day ; yesterday → the day before ; tonight → that night',
+          example: '"I\'ll call tomorrow." → She said she would call the next day.',
+        },
+        {
+          situation: 'Trạng từ vị trí: here → there ; this → that ; these → those',
+          pattern: 'this → that',
+          example: '"I live here." → He said he lived there.',
+        },
+      ],
+    },
+    {
+      conjunction: 'SAID vs TOLD',
+      meaningVi: 'phân biệt 2 verb tường thuật chính',
+      patterns: [
+        {
+          situation: 'TOLD luôn theo sau bởi NGƯỜI nghe (tân ngữ)',
+          pattern: 'S + told + sb + (that) + clause',
+          example: 'He told me (that) he was tired.',
+        },
+        {
+          situation: 'SAID không có người nghe trực tiếp; nếu có thì "to sb"',
+          pattern: 'S + said + (to sb) + (that) + clause',
+          example: 'He said (that) he was tired. / He said to me he was tired.',
+        },
+        {
+          situation: '⚠️ KHÔNG nói "He said me…" hoặc "He told (that)…" (thiếu người nghe)',
+          pattern: 'said + clause   |   told + sb + clause',
+          example: 'KHÔNG: She told that... / She said me...',
+        },
+      ],
+    },
+    {
+      conjunction: 'CÂU HỎI TƯỜNG THUẬT',
+      meaningVi: 'reported questions — KHÔNG đảo trợ động từ + KHÔNG có dấu hỏi',
+      patterns: [
+        {
+          situation: 'Wh- question: dùng asked + wh- + S + V (lùi thì)',
+          pattern: 'S + asked + wh-word + S + V',
+          example: '"Where do you live?" → She asked where I lived.',
+        },
+        {
+          situation: 'Yes/No question: dùng asked + if/whether + S + V',
+          pattern: 'S + asked + if/whether + S + V',
+          example: '"Do you smoke?" → He asked if I smoked.',
+        },
+        {
+          situation: '⚠️ KHÔNG đảo trợ động từ trong reported question',
+          pattern: 'asked where SHE WORKED, KHÔNG "where did she work"',
+          example: 'KHÔNG: He asked where did I live.',
+        },
+      ],
+    },
+    {
+      conjunction: 'KHI KHÔNG LÙI THÌ',
+      meaningVi: 'các trường hợp giữ nguyên thì',
+      patterns: [
+        {
+          situation: '1. Sự thật hiển nhiên / chân lý',
+          pattern: 'no backshift',
+          example: 'He said (that) the Earth is round. (vẫn hiện tại)',
+        },
+        {
+          situation: '2. Verb tường thuật ở HIỆN TẠI (says, tells)',
+          pattern: 'no backshift',
+          example: 'She says she is busy.',
+        },
+        {
+          situation: '3. Việc còn liên quan tới hiện tại',
+          pattern: 'optional backshift',
+          example: 'He said the train leaves at 8 (vẫn đang sáng).',
+        },
+      ],
+    },
+  ],
+}
+
 export const SPECIAL_TOPICS: SpecialTopic[] = [
   {
     id: 'sequencing',
@@ -844,6 +1190,9 @@ export const SPECIAL_TOPICS: SpecialTopic[] = [
   MODALS_DEDUCTION,
   MODALS_OBLIGATION,
   CONDITIONALS,
+  PASSIVE,
+  CAUSATIVE,
+  REPORTED_SPEECH,
 ]
 
 export function findSpecialTopic(id: string): SpecialTopic | null {
