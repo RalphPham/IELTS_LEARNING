@@ -24,6 +24,8 @@ export type TenseId =
   | 'passive'
   | 'causative'
   | 'reported_speech'
+  | 'questions'
+  | 'auxiliary_verbs'
 
 export type TenseGroup = 'present' | 'past' | 'future'
 

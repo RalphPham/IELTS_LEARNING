@@ -1173,6 +1173,248 @@ const REPORTED_SPEECH: SpecialTopic = {
   ],
 }
 
+const QUESTIONS_TOPIC: SpecialTopic = {
+  id: 'questions',
+  name: 'Question Forms — Wh-, Yes/No, Tags & Prep Position',
+  nameVi: 'Câu hỏi — Wh-, Yes/No, đuôi & vị trí giới từ',
+  emoji: '❓',
+  intro:
+    'Câu hỏi tiếng Anh = ĐẢO trợ động từ lên trước chủ ngữ. Wh-question dùng từ để hỏi đầu câu. Yes/No question bắt đầu bằng auxiliary. Murphy U45-46: trật tự câu hỏi, vị trí giới từ (Who are you talking TO?) và câu hỏi đuôi (tag questions) — vũ khí Speaking để xác nhận / mềm hóa lời nói.',
+  rules: [
+    {
+      conjunction: 'YES/NO QUESTIONS',
+      meaningVi: 'đảo trợ động từ (be, do, have, will, can...) lên trước chủ ngữ',
+      patterns: [
+        {
+          situation: 'Be: đảo trực tiếp am/is/are/was/were',
+          pattern: 'Be + S + ...?',
+          example: 'Are you tired? / Were they at home?',
+        },
+        {
+          situation: 'Mọi thì khác cần do/does/did',
+          pattern: 'Do/Does/Did + S + V(bare)?',
+          example: 'Do you smoke? / Does she like coffee? / Did they come?',
+        },
+        {
+          situation: 'Có sẵn auxiliary (have/will/can) — chỉ cần đảo',
+          pattern: 'Aux + S + V?',
+          example: 'Have you finished? / Will you help me? / Can you swim?',
+        },
+      ],
+    },
+    {
+      conjunction: 'WH-QUESTIONS',
+      meaningVi: 'từ để hỏi (Wh-) đầu câu + trật tự câu hỏi như Yes/No',
+      patterns: [
+        {
+          situation: 'Wh-word đứng đầu + đảo aux + S',
+          pattern: 'Wh- + aux + S + V?',
+          example: 'Where do you live? / What time did she arrive?',
+        },
+        {
+          situation: 'Khi Wh- LÀ chủ ngữ → KHÔNG đảo, KHÔNG dùng do/does',
+          pattern: 'Wh-(S) + V?',
+          example: 'Who broke the window? (NOT: Who did break) / What happened?',
+        },
+        {
+          situation: '⚠️ "Who" là S → V chia bình thường; "Who" là O → cần do/does',
+          pattern: 'Who broke? (S) ⟷ Who did you see? (O)',
+          example: 'Who called you? (S) vs Who(m) did you call? (O)',
+        },
+      ],
+    },
+    {
+      conjunction: 'PREPOSITION POSITION ⭐',
+      meaningVi: 'giới từ thường ở CUỐI câu hỏi tiếng Anh nói (KHÔNG đầu câu)',
+      patterns: [
+        {
+          situation: 'Câu hỏi với prepositional verb',
+          pattern: 'Wh- + aux + S + V + ... + prep?',
+          example: 'Who are you talking TO? (KHÔNG: To whom are you talking?)',
+        },
+        {
+          situation: 'Một số ví dụ thông dụng',
+          pattern: '...',
+          example: 'Where are you from? / What are you looking AT? / Who did you go WITH?',
+        },
+        {
+          situation: 'Formal writing: "To whom..." vẫn dùng được nhưng văn nói thì giới từ ở cuối',
+          pattern: 'spoken: end / formal written: front',
+          example: 'For whom is this gift? (formal) ⟷ Who is this gift FOR? (spoken)',
+        },
+      ],
+    },
+    {
+      conjunction: 'TAG QUESTIONS ⭐ (câu hỏi đuôi)',
+      meaningVi: 'thêm câu hỏi ngắn ở cuối câu khẳng định/phủ định để xác nhận hoặc tạo hội thoại',
+      patterns: [
+        {
+          situation: '⭐ Quy tắc vàng: câu KHẲNG ĐỊNH → đuôi PHỦ ĐỊNH (và ngược lại)',
+          pattern: 'positive + negative tag  |  negative + positive tag',
+          example: "You are tired, aren't you? / She isn't here, is she?",
+        },
+        {
+          situation: 'Đuôi dùng cùng trợ động từ của câu',
+          pattern: 'main aux → tag aux',
+          example: "He works hard, doesn't he? / They have left, haven't they?",
+        },
+        {
+          situation: 'Trường hợp đặc biệt: "I am" → tag dùng "aren\'t I?"',
+          pattern: "I am ..., aren't I?",
+          example: "I'm late, aren't I?",
+        },
+        {
+          situation: 'Câu mệnh lệnh: dùng "will you?" hoặc "won\'t you?" / "shall we?" cho "Let\'s"',
+          pattern: "imperative + will you?  |  Let's + shall we?",
+          example: "Close the window, will you? / Let's go, shall we?",
+        },
+        {
+          situation: '"There is/are" — tag dùng "isn\'t/aren\'t there?"',
+          pattern: "There is/are ..., isn't/aren't there?",
+          example: "There's a problem, isn't there?",
+        },
+        {
+          situation: 'Đại từ "no one / nobody / everyone" → tag dùng THEY',
+          pattern: "nobody / everyone + ... + they?",
+          example: "Nobody called, did they? / Everyone agreed, didn't they?",
+        },
+      ],
+    },
+    {
+      conjunction: 'INDIRECT/EMBEDDED QUESTIONS',
+      meaningVi: 'câu hỏi gián tiếp / lồng trong câu khác — KHÔNG đảo trợ động từ',
+      patterns: [
+        {
+          situation: 'Sau "Do you know / Can you tell me / I wonder..." → trật tự DECLARATIVE',
+          pattern: 'Do you know + wh- + S + V?',
+          example: "Do you know where she lives? (KHÔNG: where does she live)",
+        },
+        {
+          situation: 'Yes/No question lồng: dùng if/whether',
+          pattern: 'Do you know if/whether + S + V?',
+          example: "I wonder if he is coming. / Can you tell me whether the shop is open?",
+        },
+      ],
+    },
+  ],
+}
+
+const AUXILIARY_VERBS: SpecialTopic = {
+  id: 'auxiliary_verbs',
+  name: 'Auxiliary Verbs — Short Answers, Echo, So/Neither',
+  nameVi: 'Trợ động từ — câu trả lời ngắn, lặp lại, so/neither',
+  emoji: '🔁',
+  intro:
+    'Trợ động từ (be, do, have + modals) dùng để TRÁNH LẶP động từ chính: câu trả lời ngắn, "so do I" / "neither do I", lặp lại với "I do" (nhấn mạnh), tag questions. Murphy U47 — rút gọn câu nói, nghe tự nhiên hơn nhiều.',
+  rules: [
+    {
+      conjunction: 'SHORT ANSWERS',
+      meaningVi: 'trả lời ngắn dùng trợ động từ thay vì lặp lại cả câu',
+      patterns: [
+        {
+          situation: 'Câu hỏi Yes/No → "Yes/No + S + aux"',
+          pattern: 'Yes, S + aux. / No, S + aux + not.',
+          example: '"Do you smoke?" — "Yes, I do." / "No, I don\'t."',
+        },
+        {
+          situation: 'Be: "Are you tired?" — "Yes, I am." / "No, I\'m not."',
+          pattern: '...',
+          example: '"Is she Vietnamese?" — "Yes, she is."',
+        },
+        {
+          situation: 'Có modal: "Can you help?" — "Yes, I can."',
+          pattern: 'Yes, S + modal.',
+          example: '"Will you come?" — "Yes, I will."',
+        },
+      ],
+    },
+    {
+      conjunction: 'SO / NEITHER (NOR) — đồng ý',
+      meaningVi: '"so" = cũng vậy (positive); "neither/nor" = cũng không (negative)',
+      patterns: [
+        {
+          situation: 'Tôi cũng vậy (khẳng định) → SO + aux + S',
+          pattern: 'So + aux + S',
+          example: '"I like Java." — "So do I." / "She is tired." — "So am I."',
+        },
+        {
+          situation: 'Tôi cũng không → NEITHER/NOR + aux + S',
+          pattern: 'Neither/Nor + aux + S',
+          example: '"I don\'t smoke." — "Neither do I." / "I can\'t swim." — "Nor can I."',
+        },
+        {
+          situation: '⚠️ Phải dùng aux cùng dạng với câu trước',
+          pattern: 'match the auxiliary',
+          example: '"I went home." — "So did I." (KHÔNG: So do I)',
+        },
+        {
+          situation: '⚠️ Thứ tự ĐẢO: aux ĐỨNG TRƯỚC S',
+          pattern: 'So/Neither + aux + S (KHÔNG S + aux)',
+          example: '"So do I." (KHÔNG: "So I do")',
+        },
+      ],
+    },
+    {
+      conjunction: 'NHẤN MẠNH (Emphatic DO)',
+      meaningVi: 'thêm do/does/did để nhấn mạnh hành động (có thật/quan trọng)',
+      patterns: [
+        {
+          situation: 'Hiện tại đơn: do/does + V(bare)',
+          pattern: 'S + do/does + V(bare)',
+          example: 'I DO like you! / She DOES study hard.',
+        },
+        {
+          situation: 'Quá khứ đơn: did + V(bare)',
+          pattern: 'S + did + V(bare)',
+          example: 'I DID call you yesterday — check your phone.',
+        },
+        {
+          situation: 'Mệnh lệnh: do + V(bare) để mời/khuyến khích',
+          pattern: 'Do + V(bare)!',
+          example: 'Do come in! / Do tell us more!',
+        },
+      ],
+    },
+    {
+      conjunction: 'AVOID REPETITION (Echo)',
+      meaningVi: 'lặp lại bằng aux thay vì lặp lại cả động từ',
+      patterns: [
+        {
+          situation: 'So sánh: "X likes/can/has...; Y does/can/has TOO"',
+          pattern: 'S1 V; S2 aux too',
+          example: 'I like Java, and he does too. / She can swim and so can I.',
+        },
+        {
+          situation: 'Trái nghĩa: but',
+          pattern: 'S1 V; but S2 aux not',
+          example: 'I like Java, but he doesn\'t. / She arrived early but he didn\'t.',
+        },
+        {
+          situation: 'Tránh lặp trong câu hỏi',
+          pattern: '...',
+          example: '"I work hard." — "Do you?" (= Really?)',
+        },
+      ],
+    },
+    {
+      conjunction: 'LƯU Ý',
+      meaningVi: 'điểm hay nhầm',
+      patterns: [
+        {
+          situation: 'Phải chọn ĐÚNG aux của câu trước (be cho be, do cho V thường)',
+          pattern: '"He is..." → so AM I (be)  |  "He likes..." → so DO I (do)',
+          example: '"She\'s tired." — "So am I." (KHÔNG "So do I")',
+        },
+        {
+          situation: 'Phủ định: dùng "I don\'t" / "neither do I" — KHÔNG "Me neither" trong formal',
+          pattern: 'formal: Neither do I / Me neither (informal)',
+          example: '"I don\'t like fish." — "Neither do I." (formal) / "Me neither." (casual)',
+        },
+      ],
+    },
+  ],
+}
+
 export const SPECIAL_TOPICS: SpecialTopic[] = [
   {
     id: 'sequencing',
@@ -1193,6 +1435,8 @@ export const SPECIAL_TOPICS: SpecialTopic[] = [
   PASSIVE,
   CAUSATIVE,
   REPORTED_SPEECH,
+  QUESTIONS_TOPIC,
+  AUXILIARY_VERBS,
 ]
 
 export function findSpecialTopic(id: string): SpecialTopic | null {
