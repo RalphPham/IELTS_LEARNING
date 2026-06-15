@@ -43,6 +43,21 @@ function buildCard(input: VocabularyInput): Vocabulary {
   }
 }
 
+/**
+ * One-time migration: a previous push mistakenly tagged Day 25's U53 (Career)
+ * and R18 (Cross-Cultural Intelligence) items as "Day 26". This rewrites them
+ * back to "Day 25" so mergeSeed doesn't insert duplicates.
+ */
+function migrateDay26ToDay25(items: Vocabulary[]): Vocabulary[] {
+  const movedTopics = new Set([
+    'Oxford U53 — Describe a Career',
+    'Reading U18 — Cross-Cultural Intelligence (Academic)',
+  ])
+  return items.map((it) =>
+    it.day === 'Day 26' && movedTopics.has(it.topic) ? { ...it, day: 'Day 25' } : it,
+  )
+}
+
 function mergeSeed(existing: Vocabulary[]): Vocabulary[] {
   const known = new Set(existing.map((it) => `${it.day}::${it.word.toLowerCase()}`))
   const missing = seedVocabulary
@@ -53,7 +68,8 @@ function mergeSeed(existing: Vocabulary[]): Vocabulary[] {
 
 export const useVocabularyStore = defineStore('vocabulary', () => {
   const stored = loadFromStorage()
-  const items = ref<Vocabulary[]>(stored ? mergeSeed(stored) : seedVocabulary.map(buildCard))
+  const migrated = stored ? migrateDay26ToDay25(stored) : null
+  const items = ref<Vocabulary[]>(migrated ? mergeSeed(migrated) : seedVocabulary.map(buildCard))
 
   watch(
     items,
