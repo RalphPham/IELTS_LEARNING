@@ -26,6 +26,7 @@ export type TenseId =
   | 'reported_speech'
   | 'questions'
   | 'auxiliary_verbs'
+  | 'verb_patterns'
 
 export type TenseGroup = 'present' | 'past' | 'future'
 

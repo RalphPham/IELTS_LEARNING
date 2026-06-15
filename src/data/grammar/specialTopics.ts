@@ -1415,6 +1415,198 @@ const AUXILIARY_VERBS: SpecialTopic = {
   ],
 }
 
+const VERB_PATTERNS: SpecialTopic = {
+  id: 'verb_patterns',
+  name: 'Verb Patterns — V-ing, to V, V + object + to V',
+  nameVi: 'V + V-ing / V + to V (4 nhóm chính + verb đổi nghĩa)',
+  emoji: '🧩',
+  intro:
+    'Sau một động từ chính, động từ thứ hai phải ở DẠNG NÀO? Có 4 nhóm cơ bản: (1) V + V-ing (enjoy, mind, suggest...) (2) V + to V (decide, hope, promise...) (3) V + O + to V (want sb to, tell sb to, ask sb to...) (4) V + V-ing HOẶC to V — một số có nghĩa GIỐNG nhau, một số ĐỔI NGHĨA hoàn toàn (remember/regret/try/stop/forget). Murphy U48-51. Học thuộc nhóm = giải quyết 80% bài tập.',
+  rules: [
+    {
+      conjunction: 'NHÓM 1: V + V-ing',
+      meaningVi: 'những verb này LUÔN theo sau bởi V-ing',
+      patterns: [
+        {
+          situation: 'Cảm xúc & sở thích: enjoy, like (chung), love, hate, dislike, mind, miss',
+          pattern: 'S + enjoy + V-ing',
+          example: 'I enjoy learning English. / Do you mind opening the window?',
+        },
+        {
+          situation: 'Đề nghị/suy nghĩ: suggest, recommend, consider, imagine',
+          pattern: 'S + suggest + V-ing',
+          example: 'I suggest going by train. / She considered changing jobs.',
+        },
+        {
+          situation: 'Phủ định/tránh: deny, avoid, give up, postpone, put off, can\'t help',
+          pattern: 'S + avoid + V-ing',
+          example: "He denied stealing the money. / I can't help laughing at this.",
+        },
+        {
+          situation: 'Hoàn thành/tiếp tục: finish, keep, keep on, practise, spend time',
+          pattern: 'S + keep + V-ing',
+          example: 'She keeps phoning me. / I spend hours coding every day.',
+        },
+        {
+          situation: 'Sau giới từ (about, of, in, on, before, after, by, without, instead of...) → LUÔN V-ing',
+          pattern: 'preposition + V-ing',
+          example: "I'm interested IN learning Korean. / Thanks FOR helping me.",
+        },
+      ],
+    },
+    {
+      conjunction: 'NHÓM 2: V + to V',
+      meaningVi: 'những verb này LUÔN theo sau bởi TO + V(bare)',
+      patterns: [
+        {
+          situation: 'Kế hoạch & mong muốn: decide, hope, plan, want, would like, expect, intend',
+          pattern: 'S + decide + to V',
+          example: 'I decided to study abroad. / She hopes to find a job soon.',
+        },
+        {
+          situation: 'Lời hứa/đe doạ: promise, threaten, agree, refuse, offer',
+          pattern: 'S + promise + to V',
+          example: 'He promised to call me. / She refused to answer.',
+        },
+        {
+          situation: 'Khả năng/cố gắng: learn, manage, fail, afford, seem, appear, tend',
+          pattern: 'S + manage + to V',
+          example: 'I managed to fix the bug. / We can\'t afford to buy a car.',
+        },
+      ],
+    },
+    {
+      conjunction: 'NHÓM 3: V + O + to V (Murphy U50)',
+      meaningVi: 'cấu trúc "muốn/bảo/khuyên AI ĐÓ làm gì"',
+      patterns: [
+        {
+          situation: 'Yêu cầu/bảo: tell, ask, advise, warn, remind, order, allow, encourage',
+          pattern: 'S + V + O(person) + to V',
+          example: 'She told me to wait. / The teacher asked us to be quiet.',
+        },
+        {
+          situation: 'Mong muốn: want, expect, would like, would prefer',
+          pattern: 'S + want + O + to V',
+          example: 'I want you to help me. / She would like him to apologise.',
+        },
+        {
+          situation: '⭐ "Make" và "let" KHÔNG có "to": make/let + O + V(bare)',
+          pattern: 'S + make/let + O + V(bare) — KHÔNG "to"',
+          example: 'My boss made me work overtime. / Let me explain.',
+        },
+        {
+          situation: '"Help" có thể dùng cả 2 cách',
+          pattern: 'S + help + O + (to) V',
+          example: 'She helped me (to) carry the bags.',
+        },
+      ],
+    },
+    {
+      conjunction: 'NHÓM 4A: V + V-ing HOẶC to V (cùng nghĩa)',
+      meaningVi: 'không khác biệt rõ về nghĩa, có thể dùng cả 2 dạng',
+      patterns: [
+        {
+          situation: 'begin, start, continue, prefer, like, love, hate',
+          pattern: 'S + start + V-ing  =  S + start + to V',
+          example: 'It started raining. = It started to rain.',
+        },
+        {
+          situation: '⚠️ "Like / love / hate" dùng to-V thường là tương lai cụ thể; V-ing là sở thích chung',
+          pattern: '...',
+          example: 'I like swimming (sở thích). / I would like to swim (cụ thể).',
+        },
+      ],
+    },
+    {
+      conjunction: "NHÓM 4B: V + V-ing HOẶC to V — KHÁC NGHĨA ⭐⭐",
+      meaningVi: 'những verb cực kỳ bẫy — chọn sai dạng = đổi hoàn toàn nghĩa',
+      patterns: [
+        {
+          situation: 'REMEMBER + V-ing: nhớ chuyện ĐÃ làm rồi (memory)',
+          pattern: 'remember + V-ing = nhớ chuyện đã xảy ra',
+          example: 'I remember locking the door. (đã khoá rồi, giờ nhớ lại)',
+        },
+        {
+          situation: 'REMEMBER + to V: nhớ PHẢI làm (chưa làm, sẽ làm)',
+          pattern: 'remember + to V = nhớ phải làm',
+          example: "Remember to lock the door. (chưa khoá, hãy nhớ làm)",
+        },
+        {
+          situation: 'FORGET + V-ing: quên mất chuyện đã làm (hiếm, thường phủ định)',
+          pattern: "forget + V-ing",
+          example: "I'll never forget meeting her. (sẽ không quên)",
+        },
+        {
+          situation: 'FORGET + to V: quên phải làm gì',
+          pattern: 'forget + to V',
+          example: 'I forgot to call you. (đã quên gọi)',
+        },
+        {
+          situation: 'REGRET + V-ing: tiếc về chuyện ĐÃ làm trong QK',
+          pattern: 'regret + V-ing',
+          example: 'I regret saying that. (đã nói rồi, giờ tiếc)',
+        },
+        {
+          situation: 'REGRET + to V: tiếc PHẢI thông báo (formal, khi nói tin xấu)',
+          pattern: 'regret + to V',
+          example: 'I regret to inform you that... (đáng tiếc phải thông báo...)',
+        },
+        {
+          situation: 'TRY + V-ing: THỬ làm gì (xem có giải quyết được không)',
+          pattern: 'try + V-ing = thử nghiệm',
+          example: "If it doesn't work, try restarting your computer.",
+        },
+        {
+          situation: 'TRY + to V: CỐ GẮNG làm gì (nỗ lực)',
+          pattern: 'try + to V = nỗ lực',
+          example: 'I tried to lift the box but it was too heavy.',
+        },
+        {
+          situation: 'STOP + V-ing: NGỪNG làm gì (kết thúc hành động đó)',
+          pattern: 'stop + V-ing = dừng cái đang làm',
+          example: 'He stopped smoking last year. (cai thuốc)',
+        },
+        {
+          situation: 'STOP + to V: DỪNG LẠI ĐỂ làm gì khác',
+          pattern: 'stop + to V = dừng để làm việc khác',
+          example: 'He stopped to smoke. (dừng lại để hút thuốc)',
+        },
+        {
+          situation: 'MEAN + V-ing: nghĩa là (sẽ kéo theo)',
+          pattern: 'mean + V-ing = involve',
+          example: 'Taking this job means moving to Hanoi.',
+        },
+        {
+          situation: 'MEAN + to V: có ý/định làm gì',
+          pattern: 'mean + to V = intend',
+          example: "I meant to call you but I forgot.",
+        },
+      ],
+    },
+    {
+      conjunction: 'LƯU Ý NHANH',
+      meaningVi: 'những điểm cần khắc cốt ghi tâm',
+      patterns: [
+        {
+          situation: 'Sau ANY preposition → LUÔN V-ing',
+          pattern: 'prep + V-ing',
+          example: "I'm good AT coding. / Thanks FOR helping. / I'm tired OF waiting.",
+        },
+        {
+          situation: 'Sau "to" của to-infinitive → V(bare); sau "to" giới từ → V-ing',
+          pattern: 'want TO go (infinitive) ⟷ look forward TO going (prep)',
+          example: 'I look forward TO meeting you. (to là giới từ → V-ing)',
+        },
+        {
+          situation: 'Modal + V(bare) — không có "to" cũng không V-ing',
+          pattern: 'modal + V(bare)',
+          example: 'She can SWIM. (KHÔNG can to swim / can swimming)',
+        },
+      ],
+    },
+  ],
+}
+
 export const SPECIAL_TOPICS: SpecialTopic[] = [
   {
     id: 'sequencing',
@@ -1437,6 +1629,7 @@ export const SPECIAL_TOPICS: SpecialTopic[] = [
   REPORTED_SPEECH,
   QUESTIONS_TOPIC,
   AUXILIARY_VERBS,
+  VERB_PATTERNS,
 ]
 
 export function findSpecialTopic(id: string): SpecialTopic | null {
