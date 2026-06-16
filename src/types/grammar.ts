@@ -27,6 +27,7 @@ export type TenseId =
   | 'questions'
   | 'auxiliary_verbs'
   | 'verb_patterns'
+  | 'prefer_would_rather'
 
 export type TenseGroup = 'present' | 'past' | 'future'
 

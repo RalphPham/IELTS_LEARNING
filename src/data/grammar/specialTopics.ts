@@ -1607,6 +1607,143 @@ const VERB_PATTERNS: SpecialTopic = {
   ],
 }
 
+const PREFER_WOULD_RATHER: SpecialTopic = {
+  id: 'prefer_would_rather',
+  name: 'Prefer & Would rather — Expressing Preference',
+  nameVi: 'Prefer & Would rather — Diễn đạt sự ưu tiên',
+  emoji: '⚖️',
+  intro:
+    'Cách nói "thích cái này hơn cái kia". Có 3 cấu trúc chính: PREFER (sở thích chung), WOULD PREFER (1 lần cụ thể), WOULD RATHER (giả định / 1 lần cụ thể). Mỗi cái có cú pháp riêng dễ nhầm. Murphy U53.',
+  rules: [
+    {
+      conjunction: 'PREFER (sở thích chung)',
+      meaningVi: 'thích cái gì hơn cái khác — nói chung, theo thói quen',
+      patterns: [
+        {
+          situation: 'Prefer + V-ing TO + V-ing (so sánh 2 hành động)',
+          pattern: 'S + prefer + V-ing + TO + V-ing',
+          example: 'I prefer reading TO watching TV. (Thích đọc hơn xem TV — chung)',
+        },
+        {
+          situation: 'Prefer + noun + TO + noun',
+          pattern: 'S + prefer + noun + TO + noun',
+          example: 'I prefer tea to coffee.',
+        },
+        {
+          situation: 'Hoặc: prefer + to V + rather than + V(bare)',
+          pattern: 'S + prefer + to V + rather than + V(bare)',
+          example: 'I prefer to read rather than watch TV.',
+        },
+      ],
+    },
+    {
+      conjunction: 'WOULD PREFER (1 lần cụ thể)',
+      meaningVi: 'thích cái gì hơn trong tình huống cụ thể — thường tương lai gần / lời mời',
+      patterns: [
+        {
+          situation: "Would prefer + TO V (KHÔNG dùng V-ing sau would prefer)",
+          pattern: "S + would prefer + to V",
+          example: "I'd prefer to stay home tonight. (Tối nay — cụ thể)",
+        },
+        {
+          situation: 'Phủ định: would prefer NOT to V',
+          pattern: "S + would prefer not to V",
+          example: "I'd prefer not to talk about it.",
+        },
+        {
+          situation: 'So sánh: would prefer + to V + rather than + V(bare)',
+          pattern: "S + would prefer to V + rather than + V(bare)",
+          example: "I'd prefer to walk rather than take the bus.",
+        },
+      ],
+    },
+    {
+      conjunction: 'WOULD RATHER (cùng nghĩa với would prefer) ⭐',
+      meaningVi: 'thích/muốn làm gì hơn — đặc biệt cho 1 lần cụ thể',
+      patterns: [
+        {
+          situation: '⭐ Would rather + V(bare) — KHÔNG có "to"',
+          pattern: "S + would rather + V(bare)",
+          example: "I'd rather stay home. (KHÔNG: I'd rather to stay)",
+        },
+        {
+          situation: 'Phủ định: would rather NOT + V(bare)',
+          pattern: "S + would rather not + V(bare)",
+          example: "I'd rather not talk about it now.",
+        },
+        {
+          situation: 'So sánh: would rather + V(bare) + THAN + V(bare)',
+          pattern: "S + would rather + V + than + V",
+          example: "I'd rather walk than take the bus.",
+        },
+      ],
+    },
+    {
+      conjunction: 'WOULD RATHER + S + V(QUÁ KHỨ) ⭐⭐',
+      meaningVi: 'muốn AI KHÁC làm gì — dùng V QUÁ KHỨ (giả định)',
+      patterns: [
+        {
+          situation: 'Khi muốn người khác làm gì (KHÔNG phải mình)',
+          pattern: "S + would rather + (S2) + V(quá khứ đơn)",
+          example: "I'd rather you stayed at home tonight. (Tôi muốn BẠN ở nhà tối nay)",
+        },
+        {
+          situation: 'Quan trọng: V CHIA QUÁ KHỨ dù nói về hiện tại/tương lai',
+          pattern: 'V(quá khứ) cho hiện tại — giả định',
+          example: "I'd rather you didn't smoke here. (Tôi muốn bạn không hút ở đây)",
+        },
+        {
+          situation: 'So sánh 2 cấu trúc: bản thân vs người khác',
+          pattern: "I'd rather V(bare)  ⟷  I'd rather + S + V(QK)",
+          example: "I'd rather go now. (tôi) ⟷ I'd rather you went now. (bạn)",
+        },
+      ],
+    },
+    {
+      conjunction: 'BẢNG TÓM TẮT',
+      meaningVi: 'cheat sheet để chọn đúng cấu trúc',
+      patterns: [
+        {
+          situation: 'Sở thích CHUNG: I prefer reading TO watching TV.',
+          pattern: 'prefer + V-ing/N + TO + V-ing/N',
+          example: 'I prefer Italian food to French food.',
+        },
+        {
+          situation: '1 lần CỤ THỂ (bản thân): I\'d rather/prefer + to V',
+          pattern: "would rather + V(bare)  |  would prefer + to V",
+          example: "I'd rather stay home. / I'd prefer to stay home.",
+        },
+        {
+          situation: 'Muốn AI KHÁC làm: I\'d rather + S + V(QK)',
+          pattern: "would rather + S + V(past)",
+          example: "I'd rather you didn't do that.",
+        },
+      ],
+    },
+    {
+      conjunction: 'LƯU Ý',
+      meaningVi: 'những lỗi điển hình',
+      patterns: [
+        {
+          situation: '"would rather" KHÔNG đi với "to"; "would prefer" PHẢI có "to"',
+          pattern: "rather + V(bare)  ⟷  prefer + to V",
+          example: "I'd rather GO. (KHÔNG: I'd rather to go)",
+        },
+        {
+          situation: '"prefer ... to ..." vs "would rather ... than ..."',
+          pattern: 'TO (với prefer) ⟷ THAN (với would rather)',
+          example: 'I prefer X TO Y. / I\'d rather X THAN Y.',
+        },
+        {
+          situation: 'Khi đề cập NGƯỜI KHÁC — luôn V(QK) sau "would rather"',
+          pattern: "would rather + S + V(past)",
+          example: "I'd rather she came earlier. (KHÔNG: she comes)",
+        },
+      ],
+    },
+  ],
+}
+
 export const SPECIAL_TOPICS: SpecialTopic[] = [
   {
     id: 'sequencing',
@@ -1630,6 +1767,7 @@ export const SPECIAL_TOPICS: SpecialTopic[] = [
   QUESTIONS_TOPIC,
   AUXILIARY_VERBS,
   VERB_PATTERNS,
+  PREFER_WOULD_RATHER,
 ]
 
 export function findSpecialTopic(id: string): SpecialTopic | null {
