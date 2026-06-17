@@ -2011,7 +2011,6 @@ const COMPARISON: SpecialTopic = {
     },
   ],
 }
-
 export const SPECIAL_TOPICS: SpecialTopic[] = [
   {
     id: 'sequencing',

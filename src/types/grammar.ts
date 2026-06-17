@@ -30,6 +30,8 @@ export type TenseId =
   | 'prefer_would_rather'
   | 'probability'
   | 'comparison'
+  | 'probability'
+  | 'comparison'
 
 export type TenseGroup = 'present' | 'past' | 'future'
 
