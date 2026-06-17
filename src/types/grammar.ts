@@ -28,6 +28,8 @@ export type TenseId =
   | 'auxiliary_verbs'
   | 'verb_patterns'
   | 'prefer_would_rather'
+  | 'probability'
+  | 'comparison'
 
 export type TenseGroup = 'present' | 'past' | 'future'
 

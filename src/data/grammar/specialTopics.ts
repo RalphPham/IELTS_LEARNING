@@ -1744,6 +1744,274 @@ const PREFER_WOULD_RATHER: SpecialTopic = {
   ],
 }
 
+const PROBABILITY: SpecialTopic = {
+  id: 'probability',
+  name: 'Probability — Likely, Bound to, Doubt, There\'s a chance...',
+  nameVi: 'Diễn đạt xác suất / khả năng',
+  emoji: '🎲',
+  intro:
+    'Cách diễn đạt mức độ chắc chắn ngoài modal verbs: LIKELY/UNLIKELY (có/không khả năng), BOUND TO (chắc chắn xảy ra), THERE\'S A CHANCE (có cơ hội), DOUBT/EXPECT (nghi ngờ/mong đợi). Murphy U59. Vũ khí mềm cho Writing/Speaking để tránh lặp đi lặp lại "I think...".',
+  rules: [
+    {
+      conjunction: 'LIKELY / UNLIKELY',
+      meaningVi: 'có/không có khả năng xảy ra (xác suất cao/thấp)',
+      patterns: [
+        {
+          situation: '⭐ S + be + likely/unlikely + TO V',
+          pattern: 'S + be + likely/unlikely + to V',
+          example: 'It is likely TO rain tomorrow. / She is unlikely to come.',
+        },
+        {
+          situation: 'It is likely/unlikely + THAT + clause',
+          pattern: 'It is likely + that + S + V',
+          example: 'It is likely that prices will rise.',
+        },
+        {
+          situation: 'Mức độ: highly likely / very unlikely',
+          pattern: 'adv + likely',
+          example: 'A recession is highly likely next year.',
+        },
+      ],
+    },
+    {
+      conjunction: 'BOUND TO (chắc chắn 99%)',
+      meaningVi: 'việc gì đó CHẮC CHẮN sẽ xảy ra — gần như không thể tránh',
+      patterns: [
+        {
+          situation: 'S + be + bound to + V — chắc chắn xảy ra',
+          pattern: 'S + be + bound to + V(bare)',
+          example: "You are bound to feel nervous before the interview.",
+        },
+        {
+          situation: 'Khác với must — bound to nhấn mạnh tính tự nhiên/không tránh được',
+          pattern: 'bound to = inevitable',
+          example: "Mistakes are bound to happen.",
+        },
+      ],
+    },
+    {
+      conjunction: "THERE'S A CHANCE / POSSIBILITY",
+      meaningVi: 'có cơ hội / khả năng',
+      patterns: [
+        {
+          situation: "There's a (good/slim) chance + (that) + clause",
+          pattern: "There's a chance + (that) + S + V",
+          example: "There's a good chance (that) the deal will close this week.",
+        },
+        {
+          situation: "There's a chance + OF + V-ing/N",
+          pattern: "There's a chance OF + V-ing",
+          example: "There's a chance of rain this afternoon.",
+        },
+        {
+          situation: "There's a possibility (that)... — formal hơn",
+          pattern: "There's a possibility + that + S + V",
+          example: "There's a possibility that the meeting will be cancelled.",
+        },
+      ],
+    },
+    {
+      conjunction: 'DOUBT / EXPECT',
+      meaningVi: 'nghi ngờ / mong đợi',
+      patterns: [
+        {
+          situation: 'I doubt + (that/if) + S + V — nghi ngờ (nghĩa = không chắc đúng)',
+          pattern: "S + doubt + (that/if) + clause",
+          example: 'I doubt (that) she will come — she\'s busy.',
+        },
+        {
+          situation: "No doubt + S + V — không nghi ngờ gì, chắc chắn",
+          pattern: 'No doubt + S + V',
+          example: 'No doubt they will arrive late as usual.',
+        },
+        {
+          situation: 'Expect + to V / O + to V / + (that) + clause',
+          pattern: 'S + expect + to V / sb + to V / that + clause',
+          example: 'I expect to finish today. / We expect prices to rise.',
+        },
+      ],
+    },
+    {
+      conjunction: "MAY / MIGHT WELL — khả năng cao",
+      meaningVi: 'thêm "well" sau may/might để TĂNG mức độ khả năng',
+      patterns: [
+        {
+          situation: '"may well" / "might well" + V = rất có thể',
+          pattern: 'S + may/might well + V(bare)',
+          example: 'He may well be the next CEO. (rất có thể)',
+        },
+      ],
+    },
+    {
+      conjunction: 'BẢNG TÓM TẮT MỨC ĐỘ',
+      meaningVi: 'cheat sheet từ chắc chắn đến không chắc',
+      patterns: [
+        {
+          situation: 'Chắc chắn (99%)',
+          pattern: 'will definitely / be bound to / be sure to',
+          example: "He's bound to win — he's the favourite.",
+        },
+        {
+          situation: 'Khả năng cao (70-90%)',
+          pattern: '(highly) likely to / may/might well',
+          example: "It's highly likely that..., He may well succeed.",
+        },
+        {
+          situation: 'Có thể (40-60%)',
+          pattern: "may / might / could / there's a chance",
+          example: 'There\'s a chance he\'ll call.',
+        },
+        {
+          situation: 'Khả năng thấp (10-30%)',
+          pattern: 'unlikely to / I doubt',
+          example: "I doubt she'll agree.",
+        },
+      ],
+    },
+  ],
+}
+
+const COMPARISON: SpecialTopic = {
+  id: 'comparison',
+  name: 'Similarities & Differences — Identical, Similar, Apart from...',
+  nameVi: 'So sánh — giống & khác nhau (Writing Task 1)',
+  emoji: '🔄',
+  intro:
+    'Từ vựng so sánh dùng để mô tả 2 biểu đồ/đối tượng trong IELTS Writing Task 1 và Task 2. Có 3 nhóm: GIỐNG (identical, similar, the same as), KHÁC (different, unlike, in contrast), và SO SÁNH có dạng (compared with, apart from, except for). Murphy U60.',
+  rules: [
+    {
+      conjunction: 'GIỐNG NHAU',
+      meaningVi: 'từ vựng diễn đạt sự tương đồng',
+      patterns: [
+        {
+          situation: 'IDENTICAL TO — y hệt nhau, hoàn toàn giống',
+          pattern: 'S + be + identical to + N',
+          example: 'The new model is identical to the old one.',
+        },
+        {
+          situation: 'SIMILAR TO — tương tự (không hoàn toàn giống)',
+          pattern: 'S + be + similar to + N',
+          example: 'Her style is similar to her sister\'s.',
+        },
+        {
+          situation: 'THE SAME AS — bằng/giống như',
+          pattern: 'S + be + the same as + N',
+          example: 'My phone is the same as yours.',
+        },
+        {
+          situation: 'BOTH... AND... — cả 2 đều...',
+          pattern: 'Both X and Y + V',
+          example: 'Both the chart and the table show a rise.',
+        },
+        {
+          situation: 'LIKEWISE / SIMILARLY — cũng vậy (đầu câu)',
+          pattern: 'Similarly/Likewise, + clause',
+          example: 'Sales rose in 2020. Similarly, profits doubled.',
+        },
+      ],
+    },
+    {
+      conjunction: 'KHÁC NHAU',
+      meaningVi: 'từ vựng diễn đạt sự khác biệt',
+      patterns: [
+        {
+          situation: 'DIFFERENT FROM — khác với',
+          pattern: 'S + be + different from + N',
+          example: 'My approach is different from yours.',
+        },
+        {
+          situation: 'COMPLETELY/ENTIRELY DIFFERENT — hoàn toàn khác',
+          pattern: 'completely different from',
+          example: 'The two countries are completely different.',
+        },
+        {
+          situation: 'UNLIKE — không giống (đầu câu hoặc giữa câu)',
+          pattern: 'Unlike + N, + clause',
+          example: 'Unlike his brother, he loves coding.',
+        },
+        {
+          situation: 'IN CONTRAST / ON THE CONTRARY / ON THE OTHER HAND',
+          pattern: 'In contrast, + clause',
+          example: 'Sales rose in Asia. In contrast, they fell in Europe.',
+        },
+        {
+          situation: 'WHEREAS / WHILE — trong khi',
+          pattern: 'S + V whereas/while + S + V',
+          example: 'I prefer tea, whereas he prefers coffee.',
+        },
+      ],
+    },
+    {
+      conjunction: 'CÔNG CỤ SO SÁNH',
+      meaningVi: 'từ chuyên dùng cho Writing Task 1',
+      patterns: [
+        {
+          situation: 'COMPARED WITH / TO — so với',
+          pattern: 'Compared with X, Y + V',
+          example: 'Compared with 2020, sales rose by 30%.',
+        },
+        {
+          situation: 'IN COMPARISON WITH/TO — so sánh với',
+          pattern: 'In comparison with X, ...',
+          example: 'In comparison with the US, Japan exports more cars.',
+        },
+        {
+          situation: 'APART FROM / EXCEPT FOR — ngoài/trừ ra',
+          pattern: 'Apart from X, ... / Except for X, ...',
+          example: 'Apart from one item, all prices increased.',
+        },
+        {
+          situation: '⚠️ "Apart from" = ngoài ... ra (bao gồm trường hợp đó) hoặc trừ (loại trừ) — phụ thuộc ngữ cảnh',
+          pattern: '...',
+          example: 'Apart from John, everyone agreed. (= trừ John)',
+        },
+      ],
+    },
+    {
+      conjunction: 'BẰNG / KHÁC NHAU CỤ THỂ',
+      meaningVi: 'mô tả mức độ khác biệt',
+      patterns: [
+        {
+          situation: 'TWICE/THREE TIMES AS ADJ AS — gấp 2/3 lần',
+          pattern: 'S + V + twice as + adj + as + N',
+          example: "Their revenue is twice as high as ours.",
+        },
+        {
+          situation: 'NEARLY/NEARLY THE SAME — gần như giống',
+          pattern: '...',
+          example: 'The two cities have nearly the same population.',
+        },
+        {
+          situation: 'SLIGHTLY/SIGNIFICANTLY/MUCH + ADJ-er — mức độ khác biệt',
+          pattern: '...',
+          example: 'Profits are slightly higher this year. / Costs are much lower.',
+        },
+      ],
+    },
+    {
+      conjunction: 'LƯU Ý GIỚI TỪ',
+      meaningVi: 'mỗi từ so sánh đi với giới từ riêng — học thuộc',
+      patterns: [
+        {
+          situation: 'similar TO  |  identical TO  |  the same AS',
+          pattern: 'preposition matters!',
+          example: 'similar TO Y / identical TO Y / the same AS Y',
+        },
+        {
+          situation: 'different FROM  |  compared WITH  |  in contrast TO',
+          pattern: '...',
+          example: 'different FROM Y / compared WITH Y',
+        },
+        {
+          situation: '⚠️ KHÔNG nói "different than" (đó là Anh-Mỹ phi formal); chuẩn là "different from"',
+          pattern: '...',
+          example: 'Standard: different FROM (KHÔNG "different than").',
+        },
+      ],
+    },
+  ],
+}
+
 export const SPECIAL_TOPICS: SpecialTopic[] = [
   {
     id: 'sequencing',
@@ -1768,6 +2036,8 @@ export const SPECIAL_TOPICS: SpecialTopic[] = [
   AUXILIARY_VERBS,
   VERB_PATTERNS,
   PREFER_WOULD_RATHER,
+  PROBABILITY,
+  COMPARISON,
 ]
 
 export function findSpecialTopic(id: string): SpecialTopic | null {
