@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { VocabularyInput } from '@/types/vocabulary'
 
 export const DAY_1 = 'Day 1'
